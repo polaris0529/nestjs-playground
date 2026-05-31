@@ -1,0 +1,188 @@
+/* 테마 컬러 토큰 */
+:root {
+  --color-sidebar-bg:   #212529;
+  --color-sidebar-text: #adb5bd;
+  --color-content-bg:   #f8f9fa;
+  --color-card:         #ffffff;
+  --color-text:         #212529;
+  --color-text-muted:   #6c757d;
+  --color-primary:      #0d6efd;
+  --color-success:      #198754;
+  --sidebar-width:      240px;
+  --header-height:      56px;
+}
+
+/* 전체 레이아웃 */
+body {
+  background-color: var(--color-content-bg);
+  color: var(--color-text);
+}
+
+/* 헤더 */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background-color: var(--color-sidebar-bg);
+  z-index: 1030;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 1rem;
+}
+
+.app-header .brand {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  white-space: nowrap;
+  width: calc(var(--sidebar-width) - 1rem);
+}
+
+.app-header .header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-sidebar-text);
+  font-size: 0.875rem;
+}
+
+/* 사이드바 */
+.app-sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background-color: var(--color-sidebar-bg);
+  overflow-y: auto;
+  z-index: 1020;
+}
+
+.app-sidebar .nav-label {
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 1rem 1rem 0.25rem;
+}
+
+.app-sidebar .nav-link {
+  color: var(--color-sidebar-text);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0;
+  transition: background 0.15s;
+}
+
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link.active {
+  background-color: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+/* 메인 콘텐츠 */
+.app-main {
+  margin-left: var(--sidebar-width);
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-content-bg);
+}
+
+.app-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+/* 푸터 */
+.app-footer {
+  background-color: var(--color-card);
+  border-top: 1px solid #dee2e6;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── 사이드바 접힘 (collapsed) ── */
+:root {
+  --sidebar-collapsed-width: 56px;
+  --transition-speed: 0.2s;
+}
+
+.app-sidebar,
+.app-main {
+  transition: width var(--transition-speed) ease,
+              margin-left var(--transition-speed) ease;
+}
+
+/* 사이드바 접힌 상태 */
+body.sidebar-collapsed .app-sidebar {
+  width: var(--sidebar-collapsed-width);
+  overflow: hidden;
+}
+
+body.sidebar-collapsed .app-sidebar .nav-label {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.sidebar-collapsed .app-sidebar .nav-link {
+  justify-content: center;
+  padding: 0.6rem 0;
+}
+
+body.sidebar-collapsed .app-sidebar .nav-link span.nav-text {
+  display: none;
+}
+
+body.sidebar-collapsed .app-main {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* 토글 버튼 */
+.sidebar-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-sidebar-text);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  color: #fff;
+}
+
+/* ── 브레이크포인트 ── */
+
+/* 1200px 미만: 자동 접힘 (layout.js 가 처리) */
+@media (max-width: 1199px) {
+  body:not(.sidebar-collapsed) .app-sidebar {
+    width: var(--sidebar-collapsed-width);
+    overflow: hidden;
+  }
+  body:not(.sidebar-collapsed) .app-sidebar .nav-label  { opacity: 0; pointer-events: none; }
+  body:not(.sidebar-collapsed) .app-sidebar .nav-link   { justify-content: center; padding: 0.6rem 0; }
+  body:not(.sidebar-collapsed) .app-sidebar .nav-text   { display: none; }
+  body:not(.sidebar-collapsed) .app-main                { margin-left: var(--sidebar-collapsed-width); }
+}
+
+/* 768px 미만: 사이드바 완전 숨김 */
+@media (max-width: 767px) {
+  .app-sidebar { display: none; }
+  .app-main    { margin-left: 0; }
+}

@@ -117,6 +117,7 @@ If service type is unknown, default to api rules.
 
 위는 전체(공통) 룰이다. 앱 고유 규칙(코딩 규칙 / UI 디자인 / 서비스 구성)은 아래 파일에서 개별 관리하며, 다음 import 로 자동 참조한다.
 
-@.claude/rules/coding.md
+@.claude/rules/app-coding.md
+@.claude/rules/app-service.md
 @.claude/rules/ui-design.md
-@.claude/rules/service.md
+@.claude/rules/git-deploy.md

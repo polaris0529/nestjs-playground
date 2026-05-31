@@ -1,0 +1,65 @@
+services:
+  app:
+    container_name: all-inone-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "3001:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - all-inone-net
+      - nginx-proxy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  db:
+    container_name: all-inone-db
+    image: postgres:16-alpine
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-allinone}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - all-inone-db-data:/var/lib/postgresql/data
+    networks:
+      - all-inone-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-allinone}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"
+
+volumes:
+  all-inone-db-data:
+
+networks:
+  all-inone-net:
+    driver: bridge
+  nginx-proxy:
+    external: true
+    name: nginx-net
