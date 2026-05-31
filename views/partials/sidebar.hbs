@@ -10,6 +10,9 @@
   </a>
 
   <div class="nav-label">관리</div>
+  <a href="/admin" class="nav-link {{#if (eq page 'admin')}}active{{/if}}">
+    <span class="nav-text">관리자 대시보드</span>
+  </a>
   <a href="/admin/role" class="nav-link {{#if (eq page 'admin-role')}}active{{/if}}">
     <span class="nav-text">Role 관리</span>
   </a>

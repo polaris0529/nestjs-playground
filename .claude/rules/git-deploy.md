@@ -57,9 +57,9 @@ docker compose up -d app   # replace container (DB volume preserved)
 - Runtime artifacts in `deploy/`: `dist/`, `views/`, `public/`, `package.json`, `package-lock.json`
 
 ### Docker Compose
-- `all-inone-app` — NestJS app, port `3001→3000`
-- `all-inone-db` — PostgreSQL 16, internal only (no exposed port)
-- DB data persisted in volume `all-inone-db-data`
+- `workflow-app` — NestJS app, port `3001→3000`
+- `workflow-db` — PostgreSQL 16, internal only (no exposed port)
+- DB data persisted in volume `workflow-db-data`
 - App waits for DB health check before starting (`depends_on: service_healthy`)
 
 ## Database Migration
@@ -130,9 +130,9 @@ docker compose up -d app   # 컨테이너 교체 기동 (DB 볼륨 유지)
 - 런타임 필수 산출물 (`deploy/`): `dist/`, `views/`, `public/`, `package.json`, `package-lock.json`
 
 ### Docker Compose 구성
-- `all-inone-app` — NestJS 앱, 포트 `3001→3000`
-- `all-inone-db` — PostgreSQL 16, 외부 포트 미노출 (내부 통신 전용)
-- DB 데이터는 볼륨 `all-inone-db-data` 로 영속 보관
+- `workflow-app` — NestJS 앱, 포트 `3001→3000`
+- `workflow-db` — PostgreSQL 16, 외부 포트 미노출 (내부 통신 전용)
+- DB 데이터는 볼륨 `workflow-db-data` 로 영속 보관
 - 앱은 DB 헬스체크 통과 후 기동 (`depends_on: service_healthy`)
 
 ## DB 마이그레이션

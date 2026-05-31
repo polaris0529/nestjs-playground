@@ -1,133 +1,444 @@
-/* 테마 컬러 토큰 */
 :root {
-  --color-sidebar-bg:   #212529;
-  --color-sidebar-text: #adb5bd;
-  --color-content-bg:   #f8f9fa;
-  --color-card:         #ffffff;
-  --color-text:         #212529;
-  --color-text-muted:   #6c757d;
-  --color-primary:      #0d6efd;
-  --color-success:      #198754;
-  --sidebar-width:      240px;
-  --header-height:      56px;
+  /* ─── Primary Colors ─── */
+  --color-primary: #0d6efd;
+  --color-primary-hover: #0b5ed7;
+  --color-primary-light: #e7f1ff;
+
+  /* ─── Semantic Colors ─── */
+  --color-success: #198754;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  --color-info: #0dcaf0;
+
+  /* ─── Neutral Colors (Gray Scale) ─── */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* ─── Sidebar Colors ─── */
+  --color-sidebar-bg: #1f2937;
+  --color-sidebar-border: #374151;
+  --color-sidebar-hover: #374151;
+  --color-sidebar-active: #0d6efd;
+  --color-sidebar-text: #d1d5db;
+
+  /* ─── Content Colors ─── */
+  --color-content-bg: #f9fafb;
+  --color-card: #ffffff;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-border: #e5e7eb;
+
+  /* ─── Dimensions ─── */
+  --sidebar-width: 272px;
+  --header-height: 64px;
+  --sidebar-collapsed-width: 80px;
+
+  /* ─── Spacing ─── */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* ─── Transitions ─── */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ─── Shadows ─── */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* ─── Border Radius ─── */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* ─── Typography ─── */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
 }
 
-/* 전체 레이아웃 */
+/* ════════════════════════════════════════════════════════════════════════════
+   🎨 BASE STYLES
+   ════════════════════════════════════════════════════════════════════════════ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
+  font-family: var(--font-family-base);
   background-color: var(--color-content-bg);
   color: var(--color-text);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-regular);
+  overflow: hidden;
 }
 
-/* 헤더 */
+/* ════════════════════════════════════════════════════════════════════════════
+   🎯 HEADER - 개선된 네비게이션 헤더
+   ════════════════════════════════════════════════════════════════════════════ */
+
 .app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: var(--header-height);
-  background-color: var(--color-sidebar-bg);
+  background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, #111827 100%);
+  border-bottom: 1px solid var(--color-sidebar-border);
   z-index: 1030;
   display: flex;
   align-items: center;
-  padding: 0 1rem;
-  gap: 1rem;
+  padding: 0 var(--space-md);
+  gap: var(--space-md);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
 }
 
+/* 브랜드 로고 */
 .app-header .brand {
-  color: #fff;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
-  white-space: nowrap;
-  width: calc(var(--sidebar-width) - 1rem);
-}
-
-.app-header .header-right {
-  margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  color: var(--color-sidebar-text);
-  font-size: 0.875rem;
+  gap: var(--space-sm);
+  color: #ffffff;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  text-decoration: none;
+  white-space: nowrap;
+  width: var(--sidebar-width);
+  transition: opacity var(--transition-base);
+  padding-right: var(--space-md);
+  border-right: 1px solid var(--color-sidebar-border);
 }
 
-/* 사이드바 */
+.app-header .brand svg,
+.app-header .brand i {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+.app-header .brand span {
+  background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 헤더 오른쪽 영역 */
+.app-header .header-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: var(--space-lg);
+}
+
+.app-header .header-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-sidebar-text);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.app-header .header-item:hover {
+  background-color: var(--color-sidebar-hover);
+  color: #ffffff;
+}
+
+.app-header .header-item.user-menu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-left: var(--space-lg);
+  border-left: 1px solid var(--color-sidebar-border);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   📍 SIDEBAR - 개선된 사이드바
+   ════════════════════════════════════════════════════════════════════════════ */
+
 .app-sidebar {
   position: fixed;
   top: var(--header-height);
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
-  background-color: var(--color-sidebar-bg);
+  background: linear-gradient(180deg, var(--color-sidebar-bg) 0%, #111827 100%);
+  border-right: 1px solid var(--color-sidebar-border);
   overflow-y: auto;
   z-index: 1020;
+  transition: width var(--transition-base) ease,
+    margin-left var(--transition-base) ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-600) transparent;
+}
+
+.app-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-gray-600);
+  border-radius: var(--radius-full);
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-500);
+}
+
+/* 네비게이션 레이블 */
+.app-sidebar .nav-section {
+  padding: var(--space-lg) 0;
+}
+
+.app-sidebar .nav-section:first-child {
+  padding-top: var(--space-md);
 }
 
 .app-sidebar .nav-label {
-  color: var(--color-text-muted);
-  font-size: 0.7rem;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 1rem 1rem 0.25rem;
+  letter-spacing: 0.12em;
+  padding: var(--space-md) var(--space-md) var(--space-sm);
+  opacity: 0.8;
+  transition: opacity var(--transition-base);
 }
 
+/* 네비게이션 링크 */
 .app-sidebar .nav-link {
-  color: var(--color-sidebar-text);
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  border-radius: 0;
-  transition: background 0.15s;
+  gap: var(--space-sm);
+  color: var(--color-sidebar-text);
+  background: transparent;
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  margin: 0 var(--space-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
 }
 
-.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: transparent;
+  transition: background-color var(--transition-fast);
+}
+
+.app-sidebar .nav-link:hover {
+  background-color: var(--color-sidebar-hover);
+  color: #ffffff;
+  padding-left: calc(var(--space-md) + 2px);
+}
+
 .app-sidebar .nav-link.active {
-  background-color: rgba(255,255,255,0.08);
-  color: #fff;
+  background-color: rgba(13, 110, 253, 0.15);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
-/* 메인 콘텐츠 */
+.app-sidebar .nav-link.active::before {
+  background-color: var(--color-primary);
+}
+
+.app-sidebar .nav-link i,
+.app-sidebar .nav-link svg {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.app-sidebar .nav-text {
+  flex: 1;
+  transition: opacity var(--transition-base);
+}
+
+/* 뱃지 (notification count) */
+.app-sidebar .nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--space-xs);
+  background-color: var(--color-danger);
+  color: white;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   📋 MAIN CONTENT AREA
+   ════════════════════════════════════════════════════════════════════════════ */
+
 .app-main {
+  display: flex;
+  flex-direction: column;
   margin-left: var(--sidebar-width);
   margin-top: var(--header-height);
   min-height: calc(100vh - var(--header-height));
-  display: flex;
-  flex-direction: column;
   background-color: var(--color-content-bg);
+  transition: margin-left var(--transition-base) ease;
 }
 
 .app-content {
   flex: 1;
-  padding: 1.5rem;
+  padding: var(--space-xl);
+  overflow-y: auto;
 }
 
-/* 푸터 */
+/* 페이지 헤더 */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.page-header h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.page-header p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-xs);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   🎨 FOOTER
+   ════════════════════════════════════════════════════════════════════════════ */
+
 .app-footer {
   background-color: var(--color-card);
-  border-top: 1px solid #dee2e6;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.8rem;
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-md) var(--space-xl);
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition-base) ease;
 }
 
-/* ── 사이드바 접힘 (collapsed) ── */
-:root {
-  --sidebar-collapsed-width: 56px;
-  --transition-speed: 0.2s;
+.app-footer-left,
+.app-footer-right {
+  display: flex;
+  gap: var(--space-lg);
+  align-items: center;
 }
 
-.app-sidebar,
-.app-main {
-  transition: width var(--transition-speed) ease,
-              margin-left var(--transition-speed) ease;
+.app-footer a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
-/* 사이드바 접힌 상태 */
+.app-footer a:hover {
+  color: var(--color-primary);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   🎛️ SIDEBAR TOGGLE BUTTON
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.sidebar-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  color: var(--color-sidebar-text);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  margin-right: var(--space-md);
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: var(--color-sidebar-hover);
+  color: #ffffff;
+}
+
+.sidebar-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   📱 SIDEBAR COLLAPSED STATE
+   ════════════════════════════════════════════════════════════════════════════ */
+
 body.sidebar-collapsed .app-sidebar {
   width: var(--sidebar-collapsed-width);
   overflow: hidden;
@@ -135,54 +446,291 @@ body.sidebar-collapsed .app-sidebar {
 
 body.sidebar-collapsed .app-sidebar .nav-label {
   opacity: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
   pointer-events: none;
+}
+
+body.sidebar-collapsed .app-sidebar .nav-section {
+  padding: var(--space-sm) 0;
 }
 
 body.sidebar-collapsed .app-sidebar .nav-link {
   justify-content: center;
-  padding: 0.6rem 0;
+  padding: var(--space-md) 0;
+  margin: 0;
+  border-radius: 0;
+  position: relative;
+  width: 100%;
 }
 
-body.sidebar-collapsed .app-sidebar .nav-link span.nav-text {
+body.sidebar-collapsed .app-sidebar .nav-link::before {
   display: none;
+}
+
+body.sidebar-collapsed .app-sidebar .nav-text {
+  display: none;
+}
+
+body.sidebar-collapsed .app-sidebar .nav-badge {
+  position: absolute;
+  top: -8px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  padding: 0;
+  font-size: var(--font-size-xs);
+}
+
+body.sidebar-collapsed .app-header .brand span {
+  display: none;
+}
+
+body.sidebar-collapsed .app-header .brand {
+  width: var(--sidebar-collapsed-width);
+  justify-content: center;
+  border-right: none;
+  padding: 0;
 }
 
 body.sidebar-collapsed .app-main {
   margin-left: var(--sidebar-collapsed-width);
 }
 
-/* 토글 버튼 */
-.sidebar-toggle-btn {
-  background: none;
-  border: none;
-  color: var(--color-sidebar-text);
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  font-size: 1.25rem;
-  line-height: 1;
-  flex-shrink: 0;
+body.sidebar-collapsed .app-footer {
+  margin-left: var(--sidebar-collapsed-width);
 }
 
-.sidebar-toggle-btn:hover {
-  color: #fff;
-}
+/* ════════════════════════════════════════════════════════════════════════════
+   🌈 DARK MODE (선택사항)
+   ════════════════════════════════════════════════════════════════════════════ */
 
-/* ── 브레이크포인트 ── */
-
-/* 1200px 미만: 자동 접힘 (layout.js 가 처리) */
-@media (max-width: 1199px) {
-  body:not(.sidebar-collapsed) .app-sidebar {
-    width: var(--sidebar-collapsed-width);
-    overflow: hidden;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-content-bg: #111827;
+    --color-card: #1f2937;
+    --color-text: #f3f4f6;
+    --color-text-secondary: #d1d5db;
+    --color-text-muted: #9ca3af;
+    --color-border: #374151;
   }
-  body:not(.sidebar-collapsed) .app-sidebar .nav-label  { opacity: 0; pointer-events: none; }
-  body:not(.sidebar-collapsed) .app-sidebar .nav-link   { justify-content: center; padding: 0.6rem 0; }
-  body:not(.sidebar-collapsed) .app-sidebar .nav-text   { display: none; }
-  body:not(.sidebar-collapsed) .app-main                { margin-left: var(--sidebar-collapsed-width); }
+
+  .app-header {
+    background: linear-gradient(135deg, #0f172a 0%, #0f0f1e 100%);
+  }
+
+  .app-content {
+    background-color: #111827;
+  }
 }
 
-/* 768px 미만: 사이드바 완전 숨김 */
+/* ════════════════════════════════════════════════════════════════════════════
+   📱 RESPONSIVE DESIGN
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* XL 데스크탑 (1200px 이상): 전체 사이드바 표시 */
+@media (min-width: 1200px) {
+  body.sidebar-collapsed .app-sidebar {
+    width: var(--sidebar-collapsed-width);
+  }
+
+  body.sidebar-collapsed .app-sidebar .nav-link {
+    justify-content: center;
+  }
+
+  body.sidebar-collapsed .app-main {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+
+  body.sidebar-collapsed .app-footer {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+}
+
+/* 태블릿 (768px ~ 1199px): 기본으로 사이드바 축소 */
+@media (max-width: 1199px) {
+  :root {
+    --sidebar-width: var(--sidebar-collapsed-width);
+  }
+
+  .app-header .brand {
+    width: var(--sidebar-collapsed-width);
+    justify-content: center;
+    border-right: none;
+    padding: 0;
+  }
+
+  .app-header .brand span {
+    display: none;
+  }
+
+  .app-sidebar .nav-label {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .app-sidebar .nav-section {
+    padding: var(--space-sm) 0;
+  }
+
+  .app-sidebar .nav-link {
+    justify-content: center;
+    padding: var(--space-md) 0;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .app-sidebar .nav-link::before {
+    display: none;
+  }
+
+  .app-sidebar .nav-text {
+    display: none;
+  }
+
+  .app-sidebar .nav-badge {
+    position: absolute;
+    top: -8px;
+    right: 2px;
+  }
+
+  .app-main {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+
+  .app-footer {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+
+  .app-content {
+    padding: var(--space-lg);
+  }
+}
+
+/* 모바일 (768px 미만): 사이드바 완전 숨김 */
 @media (max-width: 767px) {
-  .app-sidebar { display: none; }
-  .app-main    { margin-left: 0; }
+  :root {
+    --sidebar-width: 0;
+    --header-height: 56px;
+  }
+
+  .app-header {
+    height: var(--header-height);
+    padding: 0 var(--space-sm);
+  }
+
+  .app-header .brand {
+    width: auto;
+    border-right: none;
+    padding: 0 var(--space-sm);
+  }
+
+  .app-header .brand span {
+    display: inline;
+  }
+
+  .app-sidebar {
+    display: none;
+  }
+
+  .app-main {
+    margin-left: 0;
+    margin-top: var(--header-height);
+    min-height: calc(100vh - var(--header-height));
+  }
+
+  .app-footer {
+    margin-left: 0;
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+  }
+
+  .app-content {
+    padding: var(--space-lg);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ✨ UTILITY CLASSES
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.text-muted {
+  color: var(--color-text-muted) !important;
+}
+
+.text-secondary {
+  color: var(--color-text-secondary) !important;
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.bg-light {
+  background-color: var(--color-gray-50) !important;
+}
+
+.bg-white {
+  background-color: var(--color-card) !important;
+}
+
+.border-top {
+  border-top: 1px solid var(--color-border) !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.rounded-lg {
+  border-radius: var(--radius-lg) !important;
+}
+
+/* 스케일 애니메이션 */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-base) forwards;
+}
+
+/* 슬라이드 애니메이션 */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--transition-base) forwards;
 }

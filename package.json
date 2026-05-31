@@ -1,5 +1,5 @@
 {
-  "name": "all-inone",
+  "name": "workflow",
   "version": "0.0.1",
   "description": "업무처리용 테스트 서버",
   "author": "",
@@ -33,6 +33,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.4.4",
     "@nestjs/typeorm": "^11.0.1",
     "dotenv": "^17.4.2",
     "hbs": "^4.2.1",

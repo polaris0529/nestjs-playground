@@ -1,36 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { Auth } from './entities/auth.entity';
+import { AuthRepository } from './auth.repository';
 
+// Application 계층: 비즈니스 흐름을 담당하고, 영속화는 AuthRepository 에 위임한다.
 @Injectable()
 export class AuthService {
-  constructor(
-    @InjectRepository(Auth)
-    private readonly authRepository: Repository<Auth>,
-  ) {}
+  constructor(private readonly authRepository: AuthRepository) {}
 
   create(createAuthDto: CreateAuthDto) {
-    const auth = this.authRepository.create(createAuthDto);
-    return this.authRepository.save(auth);
+    return this.authRepository.create(createAuthDto);
   }
 
   findAll() {
-    return this.authRepository.find();
+    return this.authRepository.findAll();
   }
 
   findOne(id: number) {
-    return this.authRepository.findOneBy({ id });
+    return this.authRepository.findOne(id);
   }
 
-  async update(id: number, updateAuthDto: UpdateAuthDto) {
-    await this.authRepository.update(id, updateAuthDto);
-    return this.authRepository.findOneBy({ id });
+  update(id: number, updateAuthDto: UpdateAuthDto) {
+    return this.authRepository.update(id, updateAuthDto);
   }
 
   remove(id: number) {
-    return this.authRepository.delete(id);
+    return this.authRepository.remove(id);
   }
 }

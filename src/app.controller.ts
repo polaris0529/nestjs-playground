@@ -5,6 +5,6 @@ export class AppController {
   @Get()
   @Render('index')
   index() {
-    return { title: 'All-in-One', message: 'hbs SSR 동작 중' };
+    return { title: 'WorkFlow', message: 'WorkFlow 대시보드' };
   }
 }

@@ -4,15 +4,16 @@ import { ConfigService } from '@nestjs/config';
 import { LogLevel } from '@nestjs/common';
 import { join } from 'path';
 import { AppModule } from './app.module';
-import hbs = require('hbs');
+import { setupSwagger } from './config/swagger.config';
+import hbs from 'hbs';
 
 // LOG_LEVEL 값을 NestJS LogLevel 배열로 변환
 // 'log' 이상: log, warn, error / 'debug': 전체 포함 / 'error': 에러만
 function resolveLogLevels(level: string): LogLevel[] {
   const levels: Record<string, LogLevel[]> = {
     debug: ['debug', 'verbose', 'log', 'warn', 'error'],
-    log:   ['log', 'warn', 'error'],
-    warn:  ['warn', 'error'],
+    log: ['log', 'warn', 'error'],
+    warn: ['warn', 'error'],
     error: ['error'],
   };
   return levels[level] ?? levels['log'];
@@ -31,7 +32,9 @@ async function bootstrap() {
   hbs.registerHelper('eq', (a: unknown, b: unknown) => a === b);
   app.setViewEngine('hbs');
 
+  setupSwagger(app);
+
   const port = config.get<number>('port', 3000);
   await app.listen(port, '0.0.0.0');
 }
-bootstrap();
+void bootstrap();

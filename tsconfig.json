@@ -19,8 +19,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
     "strictBindCallApply": true,
-    "noFallthroughCasesInSwitch": false,
-    "jsx": "react-jsx"
+    "noFallthroughCasesInSwitch": false
   },
   "include": ["src"]
 }
