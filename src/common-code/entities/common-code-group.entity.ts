@@ -19,6 +19,9 @@ export class CommonCodeGroup {
   @Column({ name: 'group_name', length: 50 })
   groupName: string;
 
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  description: string | null;
+
   @Column({ name: 'use_yn', type: 'char', length: 1, default: 'Y' })
   useYn: string;
 

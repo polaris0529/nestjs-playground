@@ -16,4 +16,20 @@
   <a href="/admin/role" class="nav-link {{#if (eq page 'admin-role')}}active{{/if}}">
     <span class="nav-text">Role 관리</span>
   </a>
+  <a href="/admin/common-code-group" class="nav-link {{#if (eq page 'admin-common-code-group')}}active{{/if}}">
+    <span class="nav-text">공통코드 그룹 관리</span>
+  </a>
+  <a href="/admin/common-code" class="nav-link {{#if (eq page 'admin-common-code')}}active{{/if}}">
+    <span class="nav-text">공통코드 관리</span>
+  </a>
+  <a href="/admin/menu" class="nav-link {{#if (eq page 'admin-menu')}}active{{/if}}">
+    <span class="nav-text">메뉴 관리</span>
+  </a>
+
+  {{#if menuTree.length}}
+  <div class="nav-label">메뉴</div>
+  {{#each menuTree}}
+    {{> menu_item}}
+  {{/each}}
+  {{/if}}
 </nav>

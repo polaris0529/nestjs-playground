@@ -25,6 +25,9 @@ export class CommonCode {
   @Column({ name: 'code_name', length: 50 })
   codeName: string;
 
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  description: string | null;
+
   @Column({ name: 'sort_order', default: 0 })
   sortOrder: number;
 

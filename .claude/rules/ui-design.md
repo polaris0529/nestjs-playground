@@ -41,10 +41,20 @@ views/
 │   ├── head.hbs       # <head> meta / CSS links
 │   ├── header.hbs     # top header
 │   ├── sidebar.hbs    # left sidebar
+│   ├── menu_item.hbs  # recursive menu node (tree) used by sidebar
 │   ├── footer.hbs     # bottom footer
 │   └── scripts.hbs    # <script src> at body bottom
 └── {page}.hbs         # individual pages (must include header/sidebar/footer partials)
 ```
+
+### Dynamic Menu (DB-driven sidebar)
+
+- The sidebar renders the `menu` table as a tree (by `parent_menu_id`, ordered by `sort_order`).
+- `MenuNavMiddleware` injects `res.locals.menuTree` on SSR page routes; controllers pass nothing.
+- `menu_item.hbs` is a recursive partial: a node with `menuUrl` renders as `<a>` (target `_blank` when `openType === 'BLANK'`); a node without `menuUrl` renders as a `.nav-folder` label. Children render inside `.nav-subgroup`.
+- Sidebar tree classes: `.nav-subgroup` (child indentation), `.nav-folder` (clickable folder toggle), `.nav-caret` (expand/collapse indicator).
+- **Folders are collapsed by default.** `.nav-subgroup` is hidden until its folder has `.open`; `public/js/common/menu-tree.js` toggles `.open` on `[data-menu-toggle]` click. Caret rotates 90° when open.
+- **Partial naming**: `hbs` registers partials with hyphens converted to underscores (`menu-item.hbs` → `menu_item`). Use underscores in partial filenames and `{{> name}}` references to avoid mismatch.
 
 ## Theme Colors
 
@@ -71,7 +81,10 @@ Dark sidebar + Light content theme.
 
 ### Required
 - Every page `.hbs` file must include `header`, `sidebar`, and `footer` partials.
+  - **Exception — auth pages**: `login.hbs` uses a standalone minimal centered layout (no sidebar/footer) since navigation should not be shown before authentication.
 - Responsive: sidebar hidden on mobile (`d-none d-md-block`), header remains visible.
+- **Auth UI**: auth uses an httpOnly cookie JWT. The header is server-rendered from `res.locals.user` (set by `AuthContextMiddleware`): logged in → username + `로그아웃` (a `POST /auth/logout` form), logged out → `로그인` link. Admin pages (`/admin/*`) require an ADMIN session via `AdminPageGuard`, else redirect to `/login`.
+- **Admin CRUD**: management pages list records in a `.admin-table` (DataTables) with per-row 수정/삭제 (event-delegated, no inline `onclick`). Editing uses a custom themed modal (`.modal-overlay`/`.modal-box`, toggled by `public/js/admin/crud-util.js` — no Bootstrap JS). Shared helpers in `crud-util.js`/`form-util.js`. `.badge-use` shows use/disuse state. All styled with theme tokens.
 - Any new color, layout change, or rule exception must be registered in this file (`ui-design.md`) before implementation.
 
 ---
@@ -119,10 +132,20 @@ views/
 │   ├── head.hbs       # <head> 메타/CSS
 │   ├── header.hbs     # 상단 헤더
 │   ├── sidebar.hbs    # 좌측 사이드바
+│   ├── menu_item.hbs  # 사이드바가 쓰는 재귀 메뉴 노드(트리)
 │   ├── footer.hbs     # 하단 푸터
 │   └── scripts.hbs    # 바디 하단 <script src>
 └── {page}.hbs         # 개별 페이지 (header/sidebar/footer partial 반드시 포함)
 ```
+
+### 동적 메뉴 (DB 기반 사이드바)
+
+- 사이드바는 `menu` 테이블을 트리로 렌더링한다(`parent_menu_id` 기준, `sort_order` 정렬).
+- `MenuNavMiddleware` 가 SSR 페이지 경로에서 `res.locals.menuTree` 를 주입하므로 컨트롤러는 별도로 넘기지 않는다.
+- `menu_item.hbs` 는 재귀 partial: `menuUrl` 이 있으면 `<a>`(`openType === 'BLANK'` 이면 target `_blank`), 없으면 `.nav-folder` 라벨로 렌더링한다. 하위 메뉴는 `.nav-subgroup` 안에 들어간다.
+- 사이드바 트리 클래스: `.nav-subgroup`(하위 들여쓰기), `.nav-folder`(클릭 가능한 폴더 토글), `.nav-caret`(펼침/접힘 표시).
+- **폴더는 기본 접힘 상태.** `.nav-subgroup` 은 폴더에 `.open` 이 붙기 전까지 숨겨지며, `public/js/common/menu-tree.js` 가 `[data-menu-toggle]` 클릭 시 `.open` 을 토글한다. 펼침 시 캐럿이 90도 회전한다.
+- **Partial 이름 규칙**: `hbs` 는 partial 등록 시 하이픈을 언더스코어로 변환한다(`menu-item.hbs` → `menu_item`). partial 파일명과 `{{> name}}` 참조는 언더스코어를 사용한다.
 
 ## 테마 컬러
 
@@ -149,5 +172,8 @@ views/
 
 ### 반드시 준수
 - 모든 페이지 `.hbs` 파일에 `header`, `sidebar`, `footer` partial 반드시 포함.
+  - **예외 — 인증 페이지**: `login.hbs` 는 인증 전 네비게이션을 노출하지 않도록 사이드바/푸터 없는 독립 중앙정렬 레이아웃을 사용한다.
 - 반응형 대응: 모바일에서 사이드바 숨김(`d-none d-md-block`), 헤더 유지.
+- **인증 UI**: 인증은 httpOnly 쿠키 JWT 를 사용한다. 헤더는 `res.locals.user`(`AuthContextMiddleware` 가 설정) 기준 서버 렌더링: 로그인 시 사용자명 + `로그아웃`(`POST /auth/logout` 폼), 비로그인 시 `로그인` 링크. 관리자 페이지(`/admin/*`)는 `AdminPageGuard` 로 ADMIN 세션을 요구하며 아니면 `/login` 으로 리다이렉트.
+- **관리(CRUD) UI**: 관리 페이지는 `.admin-table`(DataTables)에 레코드를 나열하고 행별 수정/삭제(이벤트 위임, 인라인 `onclick` 금지)를 제공한다. 수정은 테마 커스텀 모달(`.modal-overlay`/`.modal-box`, `public/js/admin/crud-util.js` 로 토글 — Bootstrap JS 미사용). 공통 헬퍼는 `crud-util.js`/`form-util.js`. `.badge-use` 는 사용/미사용 상태 표시. 모두 테마 토큰으로 스타일링.
 - 신규 컬러, 레이아웃 변경, 규제 예외는 이 파일(`ui-design.md`)을 먼저 수정 후 구현.

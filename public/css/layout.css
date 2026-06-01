@@ -327,6 +327,33 @@ body {
   margin-left: auto;
 }
 
+/* 동적 메뉴 트리: 하위 메뉴 들여쓰기 + 폴더(링크 없는) 라벨 */
+/* 폴더는 기본 접힘: 하위(nav-subgroup)는 숨기고, 폴더에 .open 일 때만 표시 */
+.app-sidebar .nav-subgroup {
+  padding-left: var(--space-md);
+  display: none;
+}
+
+.app-sidebar .nav-folder.open + .nav-subgroup {
+  display: block;
+}
+
+.app-sidebar .nav-folder {
+  cursor: pointer;
+}
+
+/* 접힘/펼침 표시 캐럿 (펼침 시 90도 회전) */
+.app-sidebar .nav-caret {
+  display: inline-block;
+  margin-right: var(--space-xs);
+  font-size: var(--font-size-xs);
+  transition: transform var(--transition-fast);
+}
+
+.app-sidebar .nav-folder.open .nav-caret {
+  transform: rotate(90deg);
+}
+
 /* ════════════════════════════════════════════════════════════════════════════
    📋 MAIN CONTENT AREA
    ════════════════════════════════════════════════════════════════════════════ */
@@ -524,6 +551,150 @@ body.sidebar-collapsed .app-footer {
   .app-content {
     background-color: #111827;
   }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   🔐 AUTH (로그인) — 독립 중앙정렬 레이아웃
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  background-color: var(--color-content-bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   🗂️ ADMIN — 관리 목록/테이블/모달 (테마 토큰 일관 적용)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.admin-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-md);
+}
+
+/* 관리 테이블 */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-card);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.admin-table thead th {
+  background-color: var(--color-gray-50);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.admin-table tbody td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-table tbody tr:hover {
+  background-color: var(--color-gray-50);
+}
+
+/* 상태 뱃지 (사용여부 등) */
+.badge-use {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.badge-use.on {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.badge-use.off {
+  background-color: var(--color-gray-100);
+  color: var(--color-text-muted);
+}
+
+/* DataTables 컨트롤(검색 인풋) 테마 정렬 */
+.dataTables_wrapper {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.dataTables_filter input {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  margin-left: var(--space-sm);
+}
+
+/* 커스텀 모달 (Bootstrap JS 미사용) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(17, 24, 39, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  z-index: 1050;
+}
+
+.modal-box {
+  background-color: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-box .modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-box .modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+}
+
+.modal-box .modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xl);
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.modal-box .modal-body {
+  padding: var(--space-lg);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════

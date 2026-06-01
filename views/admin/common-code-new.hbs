@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+{{> head title="공통코드 생성"}}
+<body>
+  {{> header}}
+  {{> sidebar page="admin-common-code"}}
+
+  <div class="app-main">
+    <div class="app-content">
+      <div class="page-header">
+        <div>
+          <h1>공통코드 생성</h1>
+          <p>선택한 그룹에 속하는 개별 코드를 등록합니다.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-7">
+          <div class="card shadow-md rounded-lg">
+            <div class="card-body">
+              <form id="codeForm" novalidate>
+                <div class="mb-3">
+                  <label for="codeGroupId" class="form-label">소속 그룹</label>
+                  <select class="form-select" id="codeGroupId" name="codeGroupId" required></select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="code" class="form-label">코드값</label>
+                  <input type="text" class="form-control" id="code" name="code"
+                    placeholder="예: PAGE" required />
+                  <div class="form-text">대문자로 시작하는 영대문자/숫자/_ 조합</div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="codeName" class="form-label">코드명</label>
+                  <input type="text" class="form-control" id="codeName" name="codeName"
+                    placeholder="예: 내부화면" required />
+                </div>
+
+                <div class="mb-3">
+                  <label for="description" class="form-label">설명 <span class="text-muted">(선택)</span></label>
+                  <input type="text" class="form-control" id="description" name="description" />
+                </div>
+
+                <div class="mb-3">
+                  <label for="sortOrder" class="form-label">정렬순서</label>
+                  <input type="number" class="form-control" id="sortOrder" name="sortOrder"
+                    value="0" min="0" max="9999" required />
+                </div>
+
+                <div class="mb-3">
+                  <label for="useYn" class="form-label">사용여부</label>
+                  <select class="form-select" id="useYn" name="useYn" data-code-group="USE_YN" required></select>
+                </div>
+
+                <div id="formMessage" class="mb-3" role="alert"></div>
+
+                <button type="submit" class="btn btn-primary">생성</button>
+                <a href="/admin" class="btn btn-outline-secondary">취소</a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{> footer version="0.0.1"}}
+  </div>
+
+  {{> scripts}}
+  <script src="/js/admin/form-util.js"></script>
+  <script src="/js/admin/common-code/new.js"></script>
+</body>
+</html>

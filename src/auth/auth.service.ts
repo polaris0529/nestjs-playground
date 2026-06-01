@@ -1,30 +1,45 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { AuthRepository } from './auth.repository';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { AccountService } from '../account/account.service';
+import { LoginDto } from './dto/login.dto';
 
-// Application 계층: 비즈니스 흐름을 담당하고, 영속화는 AuthRepository 에 위임한다.
+// Application 계층: 자격증명 검증 후 JWT 를 발급한다(별도 auth 테이블 없이 account 기반).
 @Injectable()
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly accountService: AccountService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  create(createAuthDto: CreateAuthDto) {
-    return this.authRepository.create(createAuthDto);
-  }
+  // 로그인: 계정 검증 → lastLogin 갱신 → JWT 발급
+  async login(dto: LoginDto) {
+    const account = await this.accountService.findByLoginId(dto.loginId);
+    if (!account || account.useYn !== 'Y') {
+      throw new UnauthorizedException(
+        '아이디 또는 비밀번호가 올바르지 않습니다.',
+      );
+    }
 
-  findAll() {
-    return this.authRepository.findAll();
-  }
+    const matched = await bcrypt.compare(dto.password, account.password);
+    if (!matched) {
+      throw new UnauthorizedException(
+        '아이디 또는 비밀번호가 올바르지 않습니다.',
+      );
+    }
 
-  findOne(id: number) {
-    return this.authRepository.findOne(id);
-  }
+    const roles = (account.roles ?? []).map((r) => r.roleCode.code);
+    await this.accountService.updateLastLogin(account.accountId);
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return this.authRepository.update(id, updateAuthDto);
-  }
-
-  remove(id: number) {
-    return this.authRepository.remove(id);
+    const payload = {
+      sub: account.accountId,
+      loginId: account.loginId,
+      roles,
+    };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      loginId: account.loginId,
+      roles,
+    };
   }
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+{{> head title="공통코드 관리"}}
+<body>
+  {{> header}}
+  {{> sidebar page="admin-common-code"}}
+
+  <div class="app-main">
+    <div class="app-content">
+      <div class="page-header">
+        <div>
+          <h1>공통코드 관리</h1>
+          <p>코드 목록 조회 · 수정 · 삭제</p>
+        </div>
+        <a href="/admin/common-code/new" class="btn btn-primary">신규 코드</a>
+      </div>
+
+      <div id="formMessage" role="alert"></div>
+
+      <div class="card shadow-md rounded-lg">
+        <div class="card-body">
+          <table id="codeTable" class="admin-table"></table>
+        </div>
+      </div>
+    </div>
+    {{> footer version="0.0.1"}}
+  </div>
+
+  <!-- 수정 모달 -->
+  <div id="codeEditModal" class="modal-overlay d-none">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 class="modal-title">코드 수정</h2>
+        <button type="button" class="modal-close" data-modal-close>&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="codeEditForm" novalidate>
+          <input type="hidden" id="editId" />
+          <div class="mb-3">
+            <label class="form-label">코드값</label>
+            <input type="text" class="form-control" id="editCode" disabled />
+          </div>
+          <div class="mb-3">
+            <label for="editCodeName" class="form-label">코드명</label>
+            <input type="text" class="form-control" id="editCodeName" required />
+          </div>
+          <div class="mb-3">
+            <label for="editDescription" class="form-label">설명</label>
+            <input type="text" class="form-control" id="editDescription" />
+          </div>
+          <div class="mb-3">
+            <label for="editSortOrder" class="form-label">정렬순서</label>
+            <input type="number" class="form-control" id="editSortOrder" min="0" max="9999" required />
+          </div>
+          <div class="mb-3">
+            <label for="editUseYn" class="form-label">사용여부</label>
+            <select class="form-select" id="editUseYn" data-code-group="USE_YN" required></select>
+          </div>
+          <div id="modalMessage" role="alert"></div>
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-modal-close>취소</button>
+            <button type="submit" class="btn btn-primary">저장</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {{> scripts}}
+  <script src="/js/admin/form-util.js"></script>
+  <script src="/js/admin/crud-util.js"></script>
+  <script src="/js/admin/common-code/list.js"></script>
+</body>
+</html>
