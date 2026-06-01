@@ -10,4 +10,9 @@ export class UpdateAccountDto {
   @IsOptional()
   @IsIn(['Y', 'N'])
   useYn?: string;
+
+  // 역할 변경 (선택) — ROLE_TYPE 공통코드
+  @IsOptional()
+  @IsIn(['ADMIN', 'USER'])
+  roleCode?: string;
 }

@@ -23,8 +23,7 @@ export class SeedMenus1749000000000 implements MigrationInterface {
         ('APP', 'APP_CCG_NEW',  '공통코드 그룹 생성','/admin/common-code-group/new',   'PAGE',   'SELF',  3),
         ('APP', 'APP_CC_NEW',   '공통코드 생성',     '/admin/common-code/new',         'PAGE',   'SELF',  4),
         ('APP', 'APP_MENU_NEW', '메뉴 생성',         '/admin/menu/new',                'PAGE',   'SELF',  5),
-        ('APP', 'APP_ROLE',     'Role 관리',         '/admin/role',                    'PAGE',   'SELF',  6),
-        ('APP', 'APP_APIDOC',   'API 문서',          '/api-docs',                      'LINK',   'BLANK', 7),
+        ('APP', 'APP_APIDOC',   'API 문서',          '/api-docs',                      'LINK',   'BLANK', 6),
         -- 원격 서버 (NPM 프록시 호스트 기준 운영 도메인)
         ('REMOTE', 'REMOTE_WORKFLOW',  'WorkFlow (운영)',     'https://polaris9309.store',           'LINK', 'BLANK', 1),
         ('REMOTE', 'REMOTE_SPRING',    'Spring App',          'https://app.polaris9309.store/api',   'LINK', 'BLANK', 2),
@@ -70,7 +69,7 @@ export class SeedMenus1749000000000 implements MigrationInterface {
     `);
     await queryRunner.query(`
       DELETE FROM menu WHERE menu_code IN (
-        'APP_DASH','APP_ADMIN','APP_CCG_NEW','APP_CC_NEW','APP_MENU_NEW','APP_ROLE','APP_APIDOC',
+        'APP_DASH','APP_ADMIN','APP_CCG_NEW','APP_CC_NEW','APP_MENU_NEW','APP_APIDOC',
         'REMOTE_WORKFLOW','REMOTE_SPRING','REMOTE_PORTAINER','REMOTE_NPM','DEV_REPO','DEV_REF','DEV_TOOL'
       )
     `);

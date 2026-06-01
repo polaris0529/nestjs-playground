@@ -26,7 +26,7 @@ Module and service composition rules for this app. See root `CLAUDE.md` for glob
 - **Errors**: global `HttpErrorFilter` returns a unified JSON envelope `{ statusCode, error, message, path, timestamp }`.
 - Passwords are hashed with **bcrypt** in `AccountService` (never stored in plaintext).
 - Roles are `ROLE_TYPE` common codes (`ADMIN` / `USER`) linked via `account_role`. The JWT payload carries `roles`.
-- API routes: `JwtAuthGuard` + `RolesGuard` (`@Roles('ADMIN')`) — return 401/403. SSR admin pages: `AdminPageGuard` redirects to `/login`. `AuthContextMiddleware` populates `req.user`/`res.locals.user` on page routes.
+- API routes: `JwtAuthGuard` + `RolesGuard` (`@Roles('ADMIN')`) — return 401/403. SSR admin pages: `AdminPageGuard` (not logged in → `/login`, non-admin → `/`). `AuthContextMiddleware` populates `req.user`/`res.locals.user` on page routes.
 
 ---
 
@@ -58,4 +58,4 @@ Module and service composition rules for this app. See root `CLAUDE.md` for glob
 - **에러**: 전역 `HttpErrorFilter` 가 통일 JSON 응답 `{ statusCode, error, message, path, timestamp }` 을 반환한다.
 - 비밀번호는 `AccountService` 에서 **bcrypt** 해싱한다(평문 저장 금지).
 - 역할은 `ROLE_TYPE` 공통코드(`ADMIN` / `USER`)이며 `account_role` 로 연결한다. JWT 페이로드에 `roles` 포함.
-- API: `JwtAuthGuard` + `RolesGuard`(`@Roles('ADMIN')`) — 401/403 반환. SSR 관리자 페이지: `AdminPageGuard` 가 `/login` 으로 리다이렉트. `AuthContextMiddleware` 가 페이지 경로에서 `req.user`/`res.locals.user` 를 채운다.
+- API: `JwtAuthGuard` + `RolesGuard`(`@Roles('ADMIN')`) — 401/403 반환. SSR 관리자 페이지: `AdminPageGuard` — 미인증은 `/login`, 로그인했으나 비-ADMIN은 `/`(홈)로 리다이렉트. `AuthContextMiddleware` 가 페이지 경로에서 `req.user`/`res.locals.user` 를 채운다.

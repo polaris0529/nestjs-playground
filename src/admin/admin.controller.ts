@@ -11,12 +11,6 @@ export class AdminController {
     return { title: '관리자 대시보드', page: 'admin' };
   }
 
-  @Get('role')
-  @Render('admin/role')
-  role() {
-    return { title: 'Role 관리', page: 'admin-role' };
-  }
-
   // 공통코드 그룹 관리(목록)
   @Get('common-code-group')
   @Render('admin/common-code-group-list')

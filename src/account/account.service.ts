@@ -100,7 +100,21 @@ export class AccountService {
   async update(id: number, dto: UpdateAccountDto) {
     const account = await this.accountRepository.findById(id);
     if (!account) throw new NotFoundException('존재하지 않는 계정입니다.');
-    const updated = await this.accountRepository.update(id, dto);
+
+    // roleCode 는 account_role(별도 테이블)로 처리, 나머지는 account 컬럼 업데이트
+    const { roleCode, ...fields } = dto;
+    if (roleCode) {
+      const roleCodeId = await this.accountRepository.findRoleCodeId(roleCode);
+      if (!roleCodeId) {
+        throw new BadRequestException(`존재하지 않는 역할입니다: ${roleCode}`);
+      }
+      await this.accountRepository.replaceRole(id, roleCodeId);
+    }
+    if (Object.keys(fields).length > 0) {
+      await this.accountRepository.update(id, fields);
+    }
+
+    const updated = await this.accountRepository.findById(id);
     return toView(updated!);
   }
 

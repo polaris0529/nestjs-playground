@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('editId').value = a.accountId;
     document.getElementById('editLoginId').value = a.loginId;
     document.getElementById('editAccountName').value = a.accountName;
+    document.getElementById('editRoleCode').value = (a.roles && a.roles[0]) || '';
     document.getElementById('editUseYn').value = a.useYn;
     openModal('accountEditModal');
   }
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const id = document.getElementById('editId').value;
     const payload = {
       accountName: document.getElementById('editAccountName').value.trim(),
+      roleCode: document.getElementById('editRoleCode').value,
       useYn: document.getElementById('editUseYn').value,
     };
     apiPatch('/accounts/' + id, payload)

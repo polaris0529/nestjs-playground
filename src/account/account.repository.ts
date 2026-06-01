@@ -62,6 +62,12 @@ export class AccountRepository {
     return this.accountRoleRepository.save(role);
   }
 
+  // 기존 역할을 모두 제거하고 새 역할로 교체한다.
+  async replaceRole(accountId: number, roleCodeId: number) {
+    await this.accountRoleRepository.delete({ accountId });
+    return this.addRole(accountId, roleCodeId);
+  }
+
   // ROLE_TYPE 그룹의 코드값(ADMIN/USER)으로 common_code id 를 해석한다.
   async findRoleCodeId(code: string): Promise<number | null> {
     const found = await this.codeRepository.findOne({
