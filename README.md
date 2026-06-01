@@ -1,157 +1,145 @@
-# all-inone (업무처리용 테스트 서버)
+# WorkFlow — NestJS 관리자 포털
 
-NestJS API 서버. DB 없이도 기동 가능합니다.
+NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/계정 관리, SSR(hbs) 화면과 Docker 배포를 포함한다.
 
-## 프로젝트 구조
+운영 도메인: `https://polaris9309.store`
+
+## 기술 스택
+
+- **런타임/프레임워크**: Node.js 20, NestJS 11
+- **DB/ORM**: PostgreSQL 16, TypeORM (마이그레이션 기반, `synchronize: false`)
+- **인증**: Passport JWT (access + refresh, httpOnly 쿠키), bcrypt 해싱, Double-submit CSRF
+- **뷰**: Handlebars(hbs) SSR + Bootstrap 5 + DataTables
+- **배포**: Docker / docker-compose, Nginx Proxy Manager 뒤단
+
+## 주요 기능
+
+- **인증/인가**: 로그인·로그아웃·토큰 자동 갱신(refresh), `ADMIN`/`USER` 역할 기반 접근 제어
+- **공통코드 관리**: 그룹/코드 CRUD (SELECTBOX 기반 입력, 검증)
+- **메뉴 관리**: 트리 구조(부모-자식) CRUD, 사이드바 동적 렌더링(접이식 폴더)
+- **계정 관리**: 생성·수정·역할 변경·비활성화, 본인 비밀번호 변경
+- **대시보드**: 로그인 시 통계 요약(계정/메뉴/코드)
+
+## 프로젝트 구조 (레이어드)
 
 ```
-├── server/   # NestJS API (포트 3000)
-├── package.json   # 루트 스크립트 (dev, build, start 등)
-└── README.md
+src/
+├── <feature>/                 # 기능 모듈 (auth, account, common-code, menu, admin)
+│   ├── *.controller.ts        # Presentation — HTTP 라우팅
+│   ├── *.service.ts           # Application — 비즈니스 흐름
+│   ├── *.repository.ts        # Infrastructure — TypeORM 캡슐화
+│   ├── dto/ , entities/
+│   └── *.module.ts
+├── shared/                    # 횡단 관심사
+│   ├── guards/ (JwtAuth, Roles, AdminPage)
+│   ├── interceptors/ (Logging)
+│   ├── filters/ (HttpError)
+│   ├── middleware/ (Logger, Auth, Csrf, MenuNav)
+│   ├── decorators/ (Roles)
+│   └── exceptions/
+├── config/                    # app.config / typeorm.config / swagger.config
+├── migrations/                # 스키마 + 시드 마이그레이션
+├── data-source.ts , main.ts
+views/        # hbs 템플릿 (partials/ 공통 조각, admin/ 관리 화면)
+public/       # 정적 자산 (css, js)
 ```
 
-**모든 명령은 저장소 루트에서 실행하세요.**
+의존 방향: **Controller → Service → Repository** (계층 건너뛰기 금지). 세부 규칙은 `.claude/rules/` 참조.
 
 ## 요구사항
 
-- Node.js (LTS 권장)
-- npm
+- Node.js 20 (LTS), npm
+- Docker / docker compose (배포·로컬 DB)
 
-## 설치
+## 환경변수 (`.env`)
 
-```bash
-npm run install:all
+루트 `.env` 에서 로드한다(커밋 금지).
+
+```env
+SERVER_PORT=3000
+LOG_LEVEL=log
+
+DATABASE_URL="postgresql://<user>:<pass>@db:5432/<db>"
+POSTGRES_USER=...
+POSTGRES_PASSWORD=...
+POSTGRES_DB=...
+
+JWT_SECRET=<access 서명 시크릿>
+JWT_REFRESH_SECRET=<refresh 서명 시크릿>
+JWT_ACCESS_EXPIRES_IN=1800      # 초 (30분)
+JWT_REFRESH_EXPIRES_IN=604800   # 초 (7일)
 ```
 
-루트에서 한 번 실행하면 루트·server 의존성이 모두 설치됩니다. (각각 따로 하려면 루트에서 `npm install`, `npm install --prefix server` 실행.)
-
-## 개발 모드로 실행
+## 로컬 실행
 
 ```bash
-npm run dev
+# 1) 의존성
+npm install
+
+# 2) DB + 앱 (docker)
+docker compose up -d --build      # base + docker-compose.override.yml(로컬 포트) 자동 병합
+
+# 앱: http://localhost:3000  /  DB 툴: localhost:5433
 ```
 
-- API 서버를 watch 모드로 실행 (포트 3000).
-- 서버 코드 수정 시 자동 재시작.
+> `docker-compose.yml`(base)은 원격 안전을 위해 호스트 포트를 노출하지 않는다. 로컬 포트(앱 3000, DB 5433)는 gitignore 대상인 `docker-compose.override.yml` 에서만 노출된다.
 
-## 스크립트 (루트에서 실행)
+소스만 watch 로 띄우려면(별도 DB 필요):
 
-| 스크립트 | 설명 |
-|----------|------|
-| `npm run dev` | 서버 개발 모드 (watch, 포트 3000) |
-| `npm run build` | 서버 빌드 (clean → server, 배포 전 권장) |
-| `npm run start` | 빌드된 앱 프로덕션 실행 (실행 전 `npm run build` 필요) |
-| `npm run run` | 빌드 후 프로덕션 실행 (한 번에) |
-| `npm run deploy:prepare` | 배포용 최소 파일만 `deploy/`에 모음 (build 후 실행) |
-| `npm run deploy` | 빌드 후 `deploy/` 생성 (배포 패킷) |
+```bash
+npm run start:dev
+```
+
+## DB 마이그레이션
+
+`synchronize: false` — 스키마 변경은 반드시 마이그레이션으로 처리한다. 컨테이너 기동 시 `docker-entrypoint.sh` 가 마이그레이션을 자동 실행한다.
+
+```bash
+npm run migration:generate    # 변경 감지해 생성
+npm run migration:run         # 적용
+npm run migration:revert      # 롤백
+```
+
+> 로컬에서 직접 실행 시 `DATABASE_URL` 의 호스트가 `db` 가 아니라 `localhost:5433` 이어야 한다.
+
+## 기본 계정
+
+- 관리자: **`appadmin`** (비밀번호는 `SeedDefaultAdmin` 마이그레이션에 시드됨 — **운영 환경에서는 반드시 변경**)
+- 역할: `ROLE_TYPE` 공통코드의 `ADMIN` / `USER`
+
+## 인증/권한 요약
+
+- 로그인 시 access/refresh JWT 를 httpOnly 쿠키로 발급, access 만료 시 자동 갱신
+- 변경 요청은 CSRF 토큰(`X-CSRF-Token` 헤더 또는 `_csrf` 폼 필드) 필요
+- 관리자 API: `ADMIN` 전용(401/403), 관리자 페이지(`/admin/*`): 미인증→`/login`, 비-ADMIN→`/`
+
+## 테스트 / 린트
+
+```bash
+npm test          # Jest
+npm run lint      # ESLint (--fix)
+npm run format    # Prettier
+```
 
 ## 배포
 
-**권장**: 컨테이너 안에서 `git clone` 후 빌드하는 방식이 아니라, **빌드한 결과물만** 이미지/서버에 넣어서 배포하는 방식이 일반적입니다. (보안·용량·재현성 측면에서 유리)
-
-- **Docker**: 이미지 빌드 시 한 번만 빌드하고, **최종 이미지에는 dist + 프로덕션 node_modules만** 들어갑니다 (multi-stage).
-- **수동/CI**: 로컬 또는 CI에서 `npm run deploy` 후 `deploy/` 폴더만 서버로 전달하면 됩니다.
-
-### 배포에 필요한 것
-
-| 구분 | 필요한 것 | 불필요한 것 |
-|------|-----------|-------------|
-| **서버** | `server/dist/` (빌드된 JS), `server/package.json`, **실행 시** `server/node_modules` (프로덕션 의존성) | server/src, 테스트, devDependencies |
-
-즉, **빌드 결과(dist) + 프로덕션 의존성**만 있으면 됩니다.
-
-### 방법 1: 배포 패킷 만들어서 전달 (권장)
-
 ```bash
-npm run deploy
-```
-
-- `deploy/` 폴더가 생성되고, 그 안에 **server/dist, server/package.json** 만 들어 있습니다.
-- 이 `deploy/` 폴더를 배포 서버로 복사한 뒤:
-
-```bash
-cd deploy/server
-npm install --production    # 프로덕션 의존성만 설치 (한 번만)
-node dist/main
-```
-
-### 방법 2: 서버에서 직접 빌드 후 실행
-
-배포 서버에 소스 전체를 올리고:
-
-```bash
+# 로컬 빌드 확인
 npm run build
-npm run start
+
+# 원격 (Nginx Proxy Manager 뒤단)
+git pull origin master
+docker compose up -d --build app   # entrypoint 가 마이그레이션 자동 실행
 ```
 
-- `server/node_modules`는 이미 있으므로, 배포 서버에서 `npm install`(또는 `npm ci`)만 해 두면 됩니다.
+- `workflow-app` — NestJS 앱 (내부 3000, nginx 프록시)
+- `workflow-db` — PostgreSQL 16 (내부 전용, 볼륨 `workflow-db-data`)
 
-### 방법 3: Docker Compose (최종 이미지 = 빌드 결과만)
+## 규칙 문서
 
-이미지 **안**에서는 소스로 빌드하지만, **실행용 이미지에는 빌드 결과물만** 들어갑니다. 서버에서 git clone 후 매번 빌드하는 구조가 아닙니다.
+프로젝트 코딩/서비스/UI/배포 규칙은 `.claude/rules/` 에 있으며 `CLAUDE.md` 에서 import 한다.
 
-```bash
-# 프로젝트 루트에서
-docker compose up -d --build
-```
-
-- **Stage 1**: 소스 복사 → `npm run build` → `npm run deploy:prepare` → `deploy/` 생성
-- **Stage 2**: `deploy/server` 만 복사 → `npm install --production` → 실행 시 `node dist/main.js` 만 사용
-- 컨테이너 안에는 소스 코드, git, devDependencies 없음.
-- 브라우저: **http://localhost:3001** (호스트 포트 3001 → 컨테이너 포트 3000)
-
-```bash
-# 로그 확인
-docker compose logs -f app
-
-# 중지
-docker compose down
-```
-
-### 환경 변수
-
-- `PORT`: 서버 포트 (기본 3000)
-- 필요 시 `.env` 를 `server/` 에 두거나, 배포 환경에 맞게 설정.
-
-## DB 없이 실행 (현재 기본)
-
-- **`.env`에 `DATABASE_URL`을 넣지 않거나 비워두면** DB 없이 기동됩니다.
-- Prisma는 초기화만 하고 실제 PostgreSQL 연결은 하지 않습니다.
-- API 키 조회·IP 화이트리스트 조회는 빈 배열로 응답하며, IP 추가/수정은 "DB 비활성" 메시지를 반환합니다.
-
-```bash
-# .env 없이 또는 DATABASE_URL 없이
-npm run dev
-```
-
-DB 연결을 명시적으로 건너뛰려면:
-
-```bash
-SKIP_DB_CONNECT=true npm run dev
-```
-
-## DB 사용 (PostgreSQL + Prisma)
-
-1. PostgreSQL 준비 후 `.env`에 연결 정보 설정:
-   ```env
-   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public"
-   ```
-2. 마이그레이션 적용:
-   ```bash
-   npx prisma migrate deploy
-   # 또는 개발 시
-   npx prisma migrate dev
-   ```
-3. 앱 실행:
-   ```bash
-   npm run dev
-   ```
-
-환경 변수 예시는 `.env.example`을 참고하세요.
-
-개발 모드 상세는 위 **개발 모드로 실행** 섹션을 참고하세요.
-
-## 문서
-
-- [PRD 명세서](docs/PRD.md)
-- [PRD 작성 가이드 정리](docs/PRD-가이드-정리.md)
+- `app-coding.md` — 레이어드 아키텍처 / REST / DTO·엔티티 / 마이그레이션
+- `app-service.md` — 모듈 구성 / 인증·인가 / Swagger
+- `ui-design.md` — hbs 템플릿 / 테마 컬러 / 동적 메뉴 / 관리 UI
+- `git-deploy.md` — git 운영 / 커밋 규칙 / 배포 흐름

@@ -34,6 +34,10 @@ Example report format:
 Proceed with commit/push? (yes to continue)
 ```
 
+## Keep README in Sync (on push)
+
+Before pushing, update `README.md` if the change affects anything it documents — features, project structure, env vars, run/migration/deploy commands, default account, or rule files. Keep the README accurate as part of the push, not as a follow-up.
+
 ## What to Commit / Exclude
 - **Never commit**: `.env`, `dist/`, `deploy/`, `node_modules/`
 - **Always commit**: `src/`, `views/`, `public/`, `migrations/`, config files
@@ -106,6 +110,10 @@ docker compose up -d app   # replace container (DB volume preserved)
 
 커밋/푸시를 진행할까요? (yes 입력 시 계속)
 ```
+
+## README 동기화 (푸시 시)
+
+푸시 전, 변경이 `README.md` 가 기술하는 내용(기능·프로젝트 구조·환경변수·실행/마이그레이션/배포 명령·기본 계정·규칙 문서)에 영향을 주면 README 를 함께 갱신한다. README 정합성은 사후 작업이 아니라 푸시의 일부로 유지한다.
 
 ## 커밋 포함/제외 대상
 - **절대 커밋 금지**: `.env`, `dist/`, `deploy/`, `node_modules/`
