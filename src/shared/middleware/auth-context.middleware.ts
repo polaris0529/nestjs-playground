@@ -1,35 +1,70 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
 
-interface JwtPayload {
+interface TokenPayload {
   sub: number;
   loginId: string;
   roles: string[];
 }
 
-// 공통 미들웨어: SSR 페이지에서 access_token 쿠키를 해석해 req.user / res.locals.user 를 채운다.
-// 인증을 강제하지 않는다(차단은 가드 책임). 헤더의 로그인/로그아웃 표시에 사용된다.
+// 공통 미들웨어: SSR 페이지에서 access 쿠키를 해석해 req.user / res.locals.user 를 채운다.
+// access 가 만료됐고 refresh 가 유효하면 새 access 쿠키를 발급(silent refresh)한다.
+// 인증을 강제하지 않는다(차단은 가드 책임).
 @Injectable()
 export class AuthContextMiddleware implements NestMiddleware {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly config: ConfigService,
+  ) {}
 
   use(req: Request, res: Response, next: NextFunction): void {
-    const token = req.cookies?.access_token as string | undefined;
-    if (token) {
-      try {
-        const payload = this.jwtService.verify<JwtPayload>(token);
-        const user = {
-          accountId: payload.sub,
-          loginId: payload.loginId,
-          roles: payload.roles,
-        };
-        req.user = user;
-        res.locals.user = user;
-      } catch {
-        // 만료/위변조 토큰은 비로그인으로 취급
-      }
+    const payload = this.resolveUser(req, res);
+    if (payload) {
+      const user = {
+        accountId: payload.sub,
+        loginId: payload.loginId,
+        roles: payload.roles,
+      };
+      req.user = user;
+      res.locals.user = user;
     }
     next();
+  }
+
+  private resolveUser(req: Request, res: Response): TokenPayload | null {
+    const accessToken = req.cookies?.access_token as string | undefined;
+    if (accessToken) {
+      try {
+        return this.jwtService.verify<TokenPayload>(accessToken);
+      } catch {
+        // 만료/위변조 → refresh 로 재발급 시도
+      }
+    }
+
+    const refreshToken = req.cookies?.refresh_token as string | undefined;
+    if (!refreshToken) return null;
+    try {
+      const payload = this.jwtService.verify<TokenPayload>(refreshToken, {
+        secret: this.config.get<string>('jwt.refreshSecret'),
+      });
+      const newAccess = this.jwtService.sign(
+        { sub: payload.sub, loginId: payload.loginId, roles: payload.roles },
+        {
+          secret: this.config.get<string>('jwt.secret'),
+          expiresIn: this.config.get<number>('jwt.accessExpiresIn'),
+        },
+      );
+      res.cookie('access_token', newAccess, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: this.config.get<string>('env') === 'production',
+        maxAge: (this.config.get<number>('jwt.accessExpiresIn') ?? 1800) * 1000,
+      });
+      return payload;
+    } catch {
+      return null;
+    }
   }
 }

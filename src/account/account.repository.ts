@@ -30,6 +30,33 @@ export class AccountRepository {
     });
   }
 
+  findAll() {
+    return this.accountRepository.find({
+      relations: { roles: { roleCode: true } },
+      order: { accountId: 'ASC' },
+    });
+  }
+
+  findById(accountId: number) {
+    return this.accountRepository.findOne({
+      where: { accountId },
+      relations: { roles: { roleCode: true } },
+    });
+  }
+
+  countAll() {
+    return this.accountRepository.count();
+  }
+
+  countActive() {
+    return this.accountRepository.count({ where: { useYn: 'Y' } });
+  }
+
+  async update(accountId: number, partial: Partial<Account>) {
+    await this.accountRepository.update(accountId, partial);
+    return this.findById(accountId);
+  }
+
   addRole(accountId: number, roleCodeId: number) {
     const role = this.accountRoleRepository.create({ accountId, roleCodeId });
     return this.accountRoleRepository.save(role);

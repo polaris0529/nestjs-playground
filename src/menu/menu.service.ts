@@ -21,6 +21,11 @@ export class MenuService {
     return this.menuRepository.findAll();
   }
 
+  // 대시보드 통계: 활성 메뉴 수
+  count() {
+    return this.menuRepository.countActive();
+  }
+
   // 사이드바 공통 함수: 활성 메뉴를 parent_menu_id 기준 트리로 변환해 반환한다.
   // 각 계층은 sort_order 순서를 유지한다(정렬된 평면 목록을 순회하므로 자동 보장).
   async findMenuTree(): Promise<MenuTreeNode[]> {
@@ -78,7 +83,28 @@ export class MenuService {
 
   async update(id: number, dto: UpdateMenuDto) {
     await this.findOne(id);
-    return this.menuRepository.update(id, dto);
+    const patch: Partial<Menu> = { ...dto };
+
+    // 상위 메뉴 변경 시 menuLevel 재계산 (자기참조·존재 검증)
+    if (dto.parentMenuId !== undefined) {
+      if (dto.parentMenuId === null) {
+        patch.parentMenuId = null;
+        patch.menuLevel = 1;
+      } else {
+        if (dto.parentMenuId === id) {
+          throw new BadRequestException(
+            '자기 자신을 상위로 지정할 수 없습니다.',
+          );
+        }
+        const parent = await this.menuRepository.findById(dto.parentMenuId);
+        if (!parent) {
+          throw new BadRequestException('상위 메뉴가 존재하지 않습니다.');
+        }
+        patch.menuLevel = parent.menuLevel + 1;
+      }
+    }
+
+    return this.menuRepository.update(id, patch);
   }
 
   // 소프트 삭제 (delete_yn = 'Y')

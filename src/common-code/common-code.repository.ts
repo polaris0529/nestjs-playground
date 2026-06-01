@@ -32,6 +32,14 @@ export class CommonCodeRepository {
     return this.groupRepository.findOneBy({ codeGroupId });
   }
 
+  countGroups() {
+    return this.groupRepository.count();
+  }
+
+  countCodes() {
+    return this.codeRepository.count();
+  }
+
   async updateGroup(codeGroupId: number, dto: UpdateCommonCodeGroupDto) {
     await this.groupRepository.update(codeGroupId, dto);
     return this.findGroupById(codeGroupId);

@@ -20,7 +20,10 @@ Module and service composition rules for this app. See root `CLAUDE.md` for glob
 - `main.ts` calls `setupSwagger(app)` to mount OpenAPI docs at `/api-docs`. The config file builds the document; `main.ts` only applies it.
 
 ## Authentication & Authorization
-- `AuthModule` authenticates against `account` (no separate auth table). Login issues a JWT stored in an **httpOnly cookie** (`access_token`); `JwtStrategy` accepts the cookie or a Bearer header.
+- `AuthModule` authenticates against `account` (no separate auth table). Login issues **access + refresh** JWTs stored in **httpOnly cookies**; `JwtStrategy` accepts the access cookie or a Bearer header.
+- **Token refresh**: access is short-lived (`JWT_ACCESS_EXPIRES_IN`), refresh is long-lived (`JWT_REFRESH_EXPIRES_IN`, separate `JWT_REFRESH_SECRET`). `POST /auth/refresh` rotates both. `AuthContextMiddleware` silently refreshes access on SSR page loads; the client axios interceptor (`http.js`) refreshes on 401.
+- **CSRF**: `CsrfMiddleware` (double-submit) issues a non-httpOnly `csrf_token` cookie and requires it back via `X-CSRF-Token` header (axios) or `_csrf` form field on mutating requests; `/auth/login` is exempt. `res.locals.csrfToken` feeds form hidden fields.
+- **Errors**: global `HttpErrorFilter` returns a unified JSON envelope `{ statusCode, error, message, path, timestamp }`.
 - Passwords are hashed with **bcrypt** in `AccountService` (never stored in plaintext).
 - Roles are `ROLE_TYPE` common codes (`ADMIN` / `USER`) linked via `account_role`. The JWT payload carries `roles`.
 - API routes: `JwtAuthGuard` + `RolesGuard` (`@Roles('ADMIN')`) — return 401/403. SSR admin pages: `AdminPageGuard` redirects to `/login`. `AuthContextMiddleware` populates `req.user`/`res.locals.user` on page routes.
@@ -49,7 +52,10 @@ Module and service composition rules for this app. See root `CLAUDE.md` for glob
 - `main.ts` 에서 `setupSwagger(app)` 를 호출해 `/api-docs` 에 OpenAPI 문서를 마운트한다. 문서 구성은 설정 파일이 담당하고, `main.ts` 는 적용만 한다.
 
 ## 인증 / 인가
-- `AuthModule` 은 별도 auth 테이블 없이 `account` 로 인증한다. 로그인 시 JWT 를 **httpOnly 쿠키**(`access_token`)에 저장하며, `JwtStrategy` 는 쿠키 또는 Bearer 헤더를 허용한다.
+- `AuthModule` 은 별도 auth 테이블 없이 `account` 로 인증한다. 로그인 시 **access + refresh** JWT 를 **httpOnly 쿠키**로 저장하며, `JwtStrategy` 는 access 쿠키 또는 Bearer 헤더를 허용한다.
+- **토큰 갱신**: access 는 단기(`JWT_ACCESS_EXPIRES_IN`), refresh 는 장기(`JWT_REFRESH_EXPIRES_IN`, 별도 `JWT_REFRESH_SECRET`). `POST /auth/refresh` 가 둘 다 회전. `AuthContextMiddleware` 가 SSR 페이지 로드 시 access 를 silent refresh 하고, 클라이언트 axios 인터셉터(`http.js`)가 401 시 갱신한다.
+- **CSRF**: `CsrfMiddleware`(double-submit)가 비 httpOnly `csrf_token` 쿠키를 발급하고, 변경 요청 시 `X-CSRF-Token` 헤더(axios) 또는 `_csrf` 폼 필드로 되돌려 검증한다. `/auth/login` 은 예외. `res.locals.csrfToken` 을 폼 hidden 필드에 사용.
+- **에러**: 전역 `HttpErrorFilter` 가 통일 JSON 응답 `{ statusCode, error, message, path, timestamp }` 을 반환한다.
 - 비밀번호는 `AccountService` 에서 **bcrypt** 해싱한다(평문 저장 금지).
 - 역할은 `ROLE_TYPE` 공통코드(`ADMIN` / `USER`)이며 `account_role` 로 연결한다. JWT 페이로드에 `roles` 포함.
 - API: `JwtAuthGuard` + `RolesGuard`(`@Roles('ADMIN')`) — 401/403 반환. SSR 관리자 페이지: `AdminPageGuard` 가 `/login` 으로 리다이렉트. `AuthContextMiddleware` 가 페이지 경로에서 `req.user`/`res.locals.user` 를 채운다.

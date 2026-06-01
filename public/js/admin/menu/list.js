@@ -21,23 +21,36 @@ document.addEventListener('DOMContentLoaded', function () {
           actionButtons(m.menuId),
         ];
       });
-      new DataTable('#menuTable', {
-        data: rows,
-        destroy: true,
-        paging: false,
-        info: false,
-        columns: [
-          { title: 'ID' },
-          { title: 'Lv' },
-          { title: '메뉴코드' },
-          { title: '메뉴명' },
-          { title: '유형' },
-          { title: 'URL' },
-          { title: '정렬' },
-          { title: '사용여부' },
-          { title: '관리', orderable: false },
-        ],
+      renderAdminTable('#menuTable', rows, [
+        { title: 'ID' },
+        { title: 'Lv' },
+        { title: '메뉴코드' },
+        { title: '메뉴명' },
+        { title: '유형' },
+        { title: 'URL' },
+        { title: '정렬' },
+        { title: '사용여부' },
+        { title: '관리', orderable: false },
+      ]);
+    });
+  }
+
+  // 상위 메뉴 SELECTBOX 채우기 (자기 자신 제외, 최상위 옵션 포함)
+  function populateParents(currentId) {
+    const list = Object.keys(records)
+      .map(function (k) {
+        return records[k];
+      })
+      .filter(function (m) {
+        return String(m.menuId) !== String(currentId);
       });
+    fillSelect(document.getElementById('editParentMenuId'), list, {
+      value: 'menuId',
+      labelFn: function (m) {
+        return m.menuName + ' (Lv.' + m.menuLevel + ')';
+      },
+      required: false,
+      emptyLabel: '최상위 (없음)',
     });
   }
 
@@ -45,7 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const m = records[id];
     if (!m) return;
     clearModalMessage();
+    populateParents(id);
     document.getElementById('editId').value = m.menuId;
+    document.getElementById('editParentMenuId').value = m.parentMenuId || '';
     document.getElementById('editMenuCode').value = m.menuCode;
     document.getElementById('editMenuName').value = m.menuName;
     document.getElementById('editMenuUrl').value = m.menuUrl || '';
@@ -72,7 +87,9 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     clearModalMessage();
     const id = document.getElementById('editId').value;
+    const parentVal = document.getElementById('editParentMenuId').value;
     const payload = {
+      parentMenuId: parentVal ? Number(parentVal) : null,
       menuName: document.getElementById('editMenuName').value.trim(),
       menuType: document.getElementById('editMenuType').value,
       sortOrder: Number(document.getElementById('editSortOrder').value),
@@ -92,10 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(showModalError);
   });
 
-  document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('js-edit')) onEdit(e.target.dataset.id);
-    if (e.target.classList.contains('js-delete')) onDelete(e.target.dataset.id);
-  });
+  bindRowActions(onEdit, onDelete);
 
   populateCodeSelects();
   loadTable();

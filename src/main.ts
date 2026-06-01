@@ -5,6 +5,8 @@ import { LogLevel, ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { setupSwagger } from './config/swagger.config';
+import { HttpErrorFilter } from './shared/filters/http-error.filter';
+import { LoggingInterceptor } from './shared/interceptors/logging.interceptor';
 import hbs from 'hbs';
 import cookieParser from 'cookie-parser';
 
@@ -38,6 +40,8 @@ async function bootstrap() {
   // 전역 검증 파이프: DTO 의 class-validator 규칙을 모든 요청에 강제 적용
   // whitelist: DTO 에 없는 속성 제거, transform: 타입 자동 변환
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalFilters(new HttpErrorFilter());
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   setupSwagger(app);
 

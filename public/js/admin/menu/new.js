@@ -35,10 +35,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (form.openType.value) payload.openType = form.openType.value;
 
     submitJson('/menus', payload)
-      .then(function (res) {
-        showMessage('success', '메뉴가 생성되었습니다. (id: ' + res.data.menuId + ')');
-        form.reset();
-        return populateParents();
+      .then(function () {
+        window.location.href = '/admin/menu';
       })
       .catch(showRequestError);
   });

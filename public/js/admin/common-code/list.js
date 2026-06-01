@@ -19,21 +19,15 @@ document.addEventListener('DOMContentLoaded', function () {
           actionButtons(c.codeId),
         ];
       });
-      new DataTable('#codeTable', {
-        data: rows,
-        destroy: true,
-        paging: false,
-        info: false,
-        columns: [
-          { title: 'ID' },
-          { title: '그룹' },
-          { title: '코드' },
-          { title: '코드명' },
-          { title: '정렬' },
-          { title: '사용여부' },
-          { title: '관리', orderable: false },
-        ],
-      });
+      renderAdminTable('#codeTable', rows, [
+        { title: 'ID' },
+        { title: '그룹' },
+        { title: '코드' },
+        { title: '코드명' },
+        { title: '정렬' },
+        { title: '사용여부' },
+        { title: '관리', orderable: false },
+      ]);
     });
   }
 
@@ -81,10 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(showModalError);
   });
 
-  document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('js-edit')) onEdit(e.target.dataset.id);
-    if (e.target.classList.contains('js-delete')) onDelete(e.target.dataset.id);
-  });
+  bindRowActions(onEdit, onDelete);
 
   populateCodeSelects();
   loadTable();

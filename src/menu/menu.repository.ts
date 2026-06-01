@@ -31,6 +31,10 @@ export class MenuRepository {
     return this.repository.findOneBy({ menuId });
   }
 
+  countActive() {
+    return this.repository.count({ where: { deleteYn: 'N' } });
+  }
+
   create(menu: Partial<Menu>) {
     const entity = this.repository.create(menu);
     return this.repository.save(entity);

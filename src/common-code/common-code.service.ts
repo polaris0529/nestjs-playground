@@ -23,6 +23,15 @@ export class CommonCodeService {
     return this.commonCodeRepository.findAllGroups();
   }
 
+  // 대시보드 통계: 그룹/코드 개수
+  async getStats() {
+    const [groups, codes] = await Promise.all([
+      this.commonCodeRepository.countGroups(),
+      this.commonCodeRepository.countCodes(),
+    ]);
+    return { groups, codes };
+  }
+
   async findGroup(id: number) {
     const group = await this.commonCodeRepository.findGroupById(id);
     if (!group) throw new NotFoundException('존재하지 않는 그룹입니다.');

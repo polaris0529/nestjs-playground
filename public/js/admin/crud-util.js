@@ -36,6 +36,37 @@ function actionButtons(id) {
   );
 }
 
+// 표준 관리 테이블 렌더 (페이징 10건 + 검색 + 가로 스크롤, 재생성 허용)
+function renderAdminTable(selector, rows, columns) {
+  return new DataTable(selector, {
+    data: rows,
+    destroy: true,
+    paging: true,
+    pageLength: 10,
+    lengthChange: false,
+    info: true,
+    searching: true,
+    autoWidth: false,
+    language: {
+      search: '검색:',
+      info: '_TOTAL_건 중 _START_–_END_',
+      infoEmpty: '0건',
+      infoFiltered: '(전체 _MAX_건에서 검색)',
+      zeroRecords: '데이터가 없습니다.',
+      paginate: { first: '«', last: '»', next: '›', previous: '‹' },
+    },
+    columns: columns,
+  });
+}
+
+// 행 액션(수정/삭제) 이벤트 위임 — 페이지당 1회 바인딩
+function bindRowActions(onEdit, onDelete) {
+  document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('js-edit')) onEdit(e.target.dataset.id);
+    if (e.target.classList.contains('js-delete')) onDelete(e.target.dataset.id);
+  });
+}
+
 // 모달 내부 메시지 영역(#modalMessage) 제어
 function showModalError(err) {
   const box = document.getElementById('modalMessage');

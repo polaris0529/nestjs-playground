@@ -8,7 +8,12 @@ export default () => ({
   logLevel: process.env.LOG_LEVEL ?? 'log',
   jwt: {
     secret: process.env.JWT_SECRET ?? 'change-me-in-env',
-    // 만료 시간(초). 기본 86400 = 1일
-    expiresIn: parseInt(process.env.JWT_EXPIRES_IN ?? '86400', 10),
+    refreshSecret: process.env.JWT_REFRESH_SECRET ?? 'change-me-refresh-in-env',
+    // 만료 시간(초). access 30분 / refresh 7일
+    accessExpiresIn: parseInt(process.env.JWT_ACCESS_EXPIRES_IN ?? '1800', 10),
+    refreshExpiresIn: parseInt(
+      process.env.JWT_REFRESH_EXPIRES_IN ?? '604800',
+      10,
+    ),
   },
 });

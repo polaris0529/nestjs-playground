@@ -11,5 +11,6 @@ import { CommonCodeController } from './common-code.controller';
   imports: [TypeOrmModule.forFeature([CommonCodeGroup, CommonCode])],
   controllers: [CommonCodeGroupController, CommonCodeController],
   providers: [CommonCodeService, CommonCodeRepository],
+  exports: [CommonCodeService],
 })
 export class CommonCodeModule {}

@@ -30,7 +30,8 @@
   --color-sidebar-text: #d1d5db;
 
   /* ─── Content Colors ─── */
-  --color-content-bg: #f9fafb;
+  --color-content-bg: #eef1f5;
+  --color-white: #ffffff;
   --color-card: #ffffff;
   --color-text: #111827;
   --color-text-secondary: #6b7280;
@@ -123,7 +124,7 @@ body {
   left: 0;
   right: 0;
   height: var(--header-height);
-  background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, #111827 100%);
+  background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, var(--color-gray-900) 100%);
   border-bottom: 1px solid var(--color-sidebar-border);
   z-index: 1030;
   display: flex;
@@ -139,7 +140,7 @@ body {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  color: #ffffff;
+  color: var(--color-white);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-lg);
   text-decoration: none;
@@ -157,7 +158,7 @@ body {
 }
 
 .app-header .brand span {
-  background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
+  background: linear-gradient(135deg, var(--color-white) 0%, var(--color-gray-200) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -185,7 +186,7 @@ body {
 
 .app-header .header-item:hover {
   background-color: var(--color-sidebar-hover);
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .app-header .header-item.user-menu {
@@ -206,7 +207,7 @@ body {
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
-  background: linear-gradient(180deg, var(--color-sidebar-bg) 0%, #111827 100%);
+  background: linear-gradient(180deg, var(--color-sidebar-bg) 0%, var(--color-gray-900) 100%);
   border-right: 1px solid var(--color-sidebar-border);
   overflow-y: auto;
   z-index: 1020;
@@ -285,7 +286,7 @@ body {
 
 .app-sidebar .nav-link:hover {
   background-color: var(--color-sidebar-hover);
-  color: #ffffff;
+  color: var(--color-white);
   padding-left: calc(var(--space-md) + 2px);
 }
 
@@ -455,7 +456,7 @@ body {
 
 .sidebar-toggle-btn:hover {
   background-color: var(--color-sidebar-hover);
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .sidebar-toggle-btn:active {
@@ -530,28 +531,7 @@ body.sidebar-collapsed .app-footer {
   margin-left: var(--sidebar-collapsed-width);
 }
 
-/* ════════════════════════════════════════════════════════════════════════════
-   🌈 DARK MODE (선택사항)
-   ════════════════════════════════════════════════════════════════════════════ */
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-content-bg: #111827;
-    --color-card: #1f2937;
-    --color-text: #f3f4f6;
-    --color-text-secondary: #d1d5db;
-    --color-text-muted: #9ca3af;
-    --color-border: #374151;
-  }
-
-  .app-header {
-    background: linear-gradient(135deg, #0f172a 0%, #0f0f1e 100%);
-  }
-
-  .app-content {
-    background-color: #111827;
-  }
-}
+/* 라이트 콘텐츠 + 다크 사이드바 테마로 고정 (OS 다크모드 따라가지 않음) */
 
 /* ════════════════════════════════════════════════════════════════════════════
    🔐 AUTH (로그인) — 독립 중앙정렬 레이아웃
@@ -635,10 +615,15 @@ body.sidebar-collapsed .app-footer {
   color: var(--color-text-muted);
 }
 
-/* DataTables 컨트롤(검색 인풋) 테마 정렬 */
+/* DataTables 컨트롤(검색/정보/페이지네이션) 테마 정렬 */
 .dataTables_wrapper {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+}
+
+.dataTables_filter {
+  margin-bottom: var(--space-md);
+  text-align: right;
 }
 
 .dataTables_filter input {
@@ -646,6 +631,59 @@ body.sidebar-collapsed .app-footer {
   border-radius: var(--radius-sm);
   padding: var(--space-xs) var(--space-sm);
   margin-left: var(--space-sm);
+  min-width: 220px;
+}
+
+.dataTables_filter input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.dataTables_info {
+  padding-top: var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* 페이지네이션 버튼 */
+.dataTables_paginate {
+  padding-top: var(--space-md);
+  display: flex;
+  gap: var(--space-xs);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.dataTables_paginate .paginate_button {
+  padding: var(--space-xs) var(--space-sm);
+  min-width: 32px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-card);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dataTables_paginate .paginate_button:hover {
+  background-color: var(--color-gray-100);
+  color: var(--color-text);
+}
+
+.dataTables_paginate .paginate_button.current,
+.dataTables_paginate .paginate_button.current:hover {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.dataTables_paginate .paginate_button.disabled,
+.dataTables_paginate .paginate_button.disabled:hover {
+  color: var(--color-text-muted);
+  background-color: var(--color-card);
+  cursor: default;
+  opacity: 0.5;
 }
 
 /* 커스텀 모달 (Bootstrap JS 미사용) */
@@ -695,6 +733,36 @@ body.sidebar-collapsed .app-footer {
 
 .modal-box .modal-body {
   padding: var(--space-lg);
+}
+
+/* 콘텐츠 카드: 진한 배경 위에서 또렷하게 (테두리 + 그림자) */
+.app-content .card {
+  border: 1px solid var(--color-border);
+}
+
+/* 대시보드 통계 카드 — 헤더/사이드바와 통일된 다크 톤 */
+.app-content .stat-card {
+  background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, var(--color-gray-900) 100%);
+  border: none;
+  color: var(--color-white);
+}
+
+.stat-card .stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-sidebar-text);
+}
+
+.stat-card .stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  line-height: 1.2;
+  margin: var(--space-xs) 0;
+}
+
+.stat-card .stat-sub {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════

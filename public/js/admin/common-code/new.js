@@ -33,9 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (description) payload.description = description;
 
     submitJson('/common-codes', payload)
-      .then(function (res) {
-        showMessage('success', '코드가 생성되었습니다. (id: ' + res.data.codeId + ')');
-        form.reset();
+      .then(function () {
+        window.location.href = '/admin/common-code';
       })
       .catch(showRequestError);
   });

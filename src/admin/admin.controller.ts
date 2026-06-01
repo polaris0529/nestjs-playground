@@ -58,4 +58,25 @@ export class AdminController {
   menuNew() {
     return { title: '메뉴 생성', page: 'admin-menu' };
   }
+
+  // 계정 관리(목록)
+  @Get('account')
+  @Render('admin/account-list')
+  accountList() {
+    return { title: '계정 관리', page: 'admin-account' };
+  }
+
+  // 계정 생성 페이지
+  @Get('account/new')
+  @Render('admin/account-new')
+  accountNew() {
+    return { title: '계정 생성', page: 'admin-account' };
+  }
+
+  // 비밀번호 변경 (셀프)
+  @Get('password')
+  @Render('admin/password')
+  password() {
+    return { title: '비밀번호 변경', page: 'admin-password' };
+  }
 }

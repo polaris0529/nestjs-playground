@@ -64,7 +64,7 @@ Dark sidebar + Light content theme.
 |---|---|---|
 | `--color-sidebar-bg` | `#212529` | Sidebar background |
 | `--color-sidebar-text` | `#adb5bd` | Sidebar text |
-| `--color-content-bg` | `#f8f9fa` | Main content background |
+| `--color-content-bg` | `#eef1f5` | Main content background (deeper so white cards pop) |
 | `--color-card` | `#ffffff` | Card / panel background |
 | `--color-text` | `#212529` | Default text |
 | `--color-text-muted` | `#6c757d` | Secondary text |
@@ -85,6 +85,7 @@ Dark sidebar + Light content theme.
 - Responsive: sidebar hidden on mobile (`d-none d-md-block`), header remains visible.
 - **Auth UI**: auth uses an httpOnly cookie JWT. The header is server-rendered from `res.locals.user` (set by `AuthContextMiddleware`): logged in → username + `로그아웃` (a `POST /auth/logout` form), logged out → `로그인` link. Admin pages (`/admin/*`) require an ADMIN session via `AdminPageGuard`, else redirect to `/login`.
 - **Admin CRUD**: management pages list records in a `.admin-table` (DataTables) with per-row 수정/삭제 (event-delegated, no inline `onclick`). Editing uses a custom themed modal (`.modal-overlay`/`.modal-box`, toggled by `public/js/admin/crud-util.js` — no Bootstrap JS). Shared helpers in `crud-util.js`/`form-util.js`. `.badge-use` shows use/disuse state. All styled with theme tokens.
+- **Card / surface contrast**: content bg is deepened (`--color-content-bg`) and `.app-content .card` carries a `--color-border` border so white cards stand out. Dashboard `.stat-card` uses the dark sidebar gradient tone (light text). Admin tables paginate 10/page (`renderAdminTable` in `crud-util.js`); DataTables controls (search/info/paginate) are theme-styled.
 - Any new color, layout change, or rule exception must be registered in this file (`ui-design.md`) before implementation.
 
 ---
@@ -155,7 +156,7 @@ views/
 |---|---|---|
 | `--color-sidebar-bg` | `#212529` | 사이드바 배경 |
 | `--color-sidebar-text` | `#adb5bd` | 사이드바 텍스트 |
-| `--color-content-bg` | `#f8f9fa` | 메인 콘텐츠 배경 |
+| `--color-content-bg` | `#eef1f5` | 메인 콘텐츠 배경 (흰 카드 대비 위해 진하게) |
 | `--color-card` | `#ffffff` | 카드/패널 배경 |
 | `--color-text` | `#212529` | 기본 텍스트 |
 | `--color-text-muted` | `#6c757d` | 보조 텍스트 |
@@ -176,4 +177,5 @@ views/
 - 반응형 대응: 모바일에서 사이드바 숨김(`d-none d-md-block`), 헤더 유지.
 - **인증 UI**: 인증은 httpOnly 쿠키 JWT 를 사용한다. 헤더는 `res.locals.user`(`AuthContextMiddleware` 가 설정) 기준 서버 렌더링: 로그인 시 사용자명 + `로그아웃`(`POST /auth/logout` 폼), 비로그인 시 `로그인` 링크. 관리자 페이지(`/admin/*`)는 `AdminPageGuard` 로 ADMIN 세션을 요구하며 아니면 `/login` 으로 리다이렉트.
 - **관리(CRUD) UI**: 관리 페이지는 `.admin-table`(DataTables)에 레코드를 나열하고 행별 수정/삭제(이벤트 위임, 인라인 `onclick` 금지)를 제공한다. 수정은 테마 커스텀 모달(`.modal-overlay`/`.modal-box`, `public/js/admin/crud-util.js` 로 토글 — Bootstrap JS 미사용). 공통 헬퍼는 `crud-util.js`/`form-util.js`. `.badge-use` 는 사용/미사용 상태 표시. 모두 테마 토큰으로 스타일링.
+- **카드/표면 대비**: 콘텐츠 배경을 진하게(`--color-content-bg`) 하고 `.app-content .card` 에 `--color-border` 테두리를 줘 흰 카드가 도드라지게 한다. 대시보드 `.stat-card` 는 다크 사이드바 그라디언트 톤(밝은 글자)을 사용. 관리 테이블은 10건/페이지 페이징(`crud-util.js` 의 `renderAdminTable`)하며 DataTables 컨트롤(검색/정보/페이지)은 테마 스타일을 적용한다.
 - 신규 컬러, 레이아웃 변경, 규제 예외는 이 파일(`ui-design.md`)을 먼저 수정 후 구현.

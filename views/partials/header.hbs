@@ -5,6 +5,7 @@
     {{#if user}}
       <span class="header-item">{{user.loginId}}</span>
       <form action="/auth/logout" method="post" class="header-logout-form">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
         <button type="submit" class="btn btn-sm btn-outline-light">로그아웃</button>
       </form>
     {{else}}

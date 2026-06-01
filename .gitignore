@@ -56,3 +56,6 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# 로컬 전용 compose 오버라이드
+docker-compose.override.yml

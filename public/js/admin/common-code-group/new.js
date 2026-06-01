@@ -17,10 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (description) payload.description = description;
 
     submitJson('/common-code-groups', payload)
-      .then(function (res) {
-        showMessage('success', '그룹이 생성되었습니다. (id: ' + res.data.codeGroupId + ')');
-        form.reset();
-        return populateCodeSelects();
+      .then(function () {
+        window.location.href = '/admin/common-code-group';
       })
       .catch(showRequestError);
   });
