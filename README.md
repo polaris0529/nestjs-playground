@@ -135,6 +135,52 @@ docker compose up -d --build app   # entrypoint 가 마이그레이션 자동 �
 - `workflow-app` — NestJS 앱 (내부 3000, nginx 프록시)
 - `workflow-db` — PostgreSQL 16 (내부 전용, 볼륨 `workflow-db-data`)
 
+## 원격 서버 구성도 (Nginx Proxy Manager)
+
+모든 외부 트래픽은 **Nginx Proxy Manager(NPM)** 가 80/443 에서 받아 도메인별로 `nginx-net`(공유 도커 네트워크) 내부 컨테이너로 프록시한다. DB 는 외부에 노출되지 않는다.
+
+```
+                              Internet (HTTPS / Let's Encrypt)
+                                        │
+                          ┌─────────────▼──────────────┐
+                          │   nginx-manager (NPM)        │  :80 :443 :81(admin)
+                          │   proxy.polaris9309.store    │
+                          └─────────────┬───────────────┘
+                                        │  (docker network: nginx-net)
+        ┌───────────────────┬──────────┼───────────────────┬───────────────────┐
+        ▼                   ▼           ▼                   ▼                   ▼
+ polaris9309.store   app.polaris9309   portainer.polaris   proxy.polaris9309   (admin UI)
+        │             .store            9309.store          .store
+        ▼                   ▼                   ▼                   ▼
+ workflow-app:3000   spring-app:8080    portainer:9443      nginx-manager:81
+   (NestJS)            (Spring)          (HTTPS, 내부전용)    (NPM 관리 콘솔)
+        │                   │
+        ▼                   ▼
+ workflow-db:5432    spring-app-db:5432      ← DB 는 nginx-net 미연결, 외부 노출 없음
+ (internal net)      (internal net)
+```
+
+### 프록시 호스트 매핑 (NPM)
+
+| 도메인 | 전달 대상(컨테이너) | Scheme | SSL | 접근 정책 |
+|---|---|---|---|---|
+| `polaris9309.store` | `workflow-app:3000` | http | Let's Encrypt | 공개 |
+| `app.polaris9309.store` | `spring-app:8080` | http | Let's Encrypt | 공개 |
+| `portainer.polaris9309.store` | `portainer:9443` | **https** | Let's Encrypt | **internal-only** |
+| `proxy.polaris9309.store` | `nginx-manager:81` | http | Let's Encrypt | 공개 |
+
+> 전달 대상은 호스트:포트가 아니라 **도커 내부 DNS(컨테이너명)** 를 사용한다. 모든 대상 컨테이너는 `nginx-net` 에 연결돼 있어야 한다(`docker network connect nginx-net <container>`).
+
+### Portainer 설정
+
+- 컨테이너: `portainer`, 내부 포트 **9443(HTTPS)** 사용 (8000/9000 은 미사용)
+- NPM Proxy Host: `portainer.polaris9309.store` → `https://portainer:9443`
+  - Scheme 를 **https** 로 지정 (Portainer 가 자체 TLS 로 9443 서빙)
+  - SSL 탭에서 Let's Encrypt 인증서 발급 + **Force SSL / HTTP2** 권장
+  - Advanced 또는 접근 정책에서 **internal-only**(사내/특정 IP 만 허용)로 제한
+- `nginx-net` 에 연결돼 있어야 NPM 이 컨테이너명으로 프록시 가능
+- 데이터 볼륨(예: `portainer_data`)로 설정 영속화
+
 ## 규칙 문서
 
 프로젝트 코딩/서비스/UI/배포 규칙은 `.claude/rules/` 에 있으며 `CLAUDE.md` 에서 import 한다.
