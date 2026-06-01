@@ -4,7 +4,7 @@ import { CreateCommonCodeGroupDto } from './dto/create-common-code-group.dto';
 import { CreateCommonCodeDto } from './dto/create-common-code.dto';
 import { UpdateCommonCodeGroupDto } from './dto/update-common-code-group.dto';
 import { UpdateCommonCodeDto } from './dto/update-common-code.dto';
-import { rethrowDbError } from '../shared/exceptions/db-error.util';
+import { rethrowDbError } from '../../shared/exceptions/db-error.util';
 
 // Application 계층: 공통코드 비즈니스 흐름을 담당하고 영속화는 Repository 에 위임한다.
 @Injectable()
@@ -15,7 +15,10 @@ export class CommonCodeService {
     try {
       return await this.commonCodeRepository.createGroup(dto);
     } catch (error) {
-      rethrowDbError(error, `이미 존재하는 그룹코드입니다: ${dto.groupCode}`);
+      rethrowDbError(error, {
+        key: 'common-code.errors.group_code_exists',
+        args: { groupCode: dto.groupCode },
+      });
     }
   }
 
@@ -34,7 +37,8 @@ export class CommonCodeService {
 
   async findGroup(id: number) {
     const group = await this.commonCodeRepository.findGroupById(id);
-    if (!group) throw new NotFoundException('존재하지 않는 그룹입니다.');
+    if (!group)
+      throw new NotFoundException('common-code.errors.group_not_found');
     return group;
   }
 
@@ -48,7 +52,7 @@ export class CommonCodeService {
     try {
       return await this.commonCodeRepository.removeGroup(id);
     } catch (error) {
-      rethrowDbError(error, '사용 중인 그룹입니다.');
+      rethrowDbError(error, 'common-code.errors.group_in_use');
     }
   }
 
@@ -73,7 +77,7 @@ export class CommonCodeService {
 
   async findCode(id: number) {
     const code = await this.commonCodeRepository.findCodeById(id);
-    if (!code) throw new NotFoundException('존재하지 않는 코드입니다.');
+    if (!code) throw new NotFoundException('common-code.errors.code_not_found');
     return code;
   }
 
@@ -87,7 +91,7 @@ export class CommonCodeService {
     try {
       return await this.commonCodeRepository.removeCode(id);
     } catch (error) {
-      rethrowDbError(error, '사용 중인 코드입니다.');
+      rethrowDbError(error, 'common-code.errors.code_in_use');
     }
   }
 }

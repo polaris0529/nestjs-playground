@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "not_found": "존재하지 않는 메뉴입니다.",
+    "parent_not_found": "상위 메뉴가 존재하지 않습니다.",
+    "parent_self": "자기 자신을 상위로 지정할 수 없습니다.",
+    "menu_code_exists": "이미 존재하는 메뉴코드입니다: {menuCode}"
+  }
+}

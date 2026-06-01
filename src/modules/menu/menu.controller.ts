@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -11,13 +12,14 @@ import {
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
-import { RolesGuard } from '../shared/guards/roles.guard';
-import { Roles } from '../shared/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
+import { RolesGuard } from '../../shared/guards/roles.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
 
 // Presentation 계층: 메뉴 리소스 REST API (관리자 전용)
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
+@ApiTags('메뉴')
 @Controller('menus')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}

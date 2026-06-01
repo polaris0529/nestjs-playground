@@ -1,9 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
-
-interface AuthUser {
-  roles?: string[];
-}
+import { AuthUser } from '../types/auth.types';
 
 // SSR 관리자 페이지 가드.
 // - 미인증: /login 으로 (로그인 필요)

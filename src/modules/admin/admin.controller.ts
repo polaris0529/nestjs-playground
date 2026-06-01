@@ -1,5 +1,5 @@
 import { Controller, Get, Render, UseGuards } from '@nestjs/common';
-import { AdminPageGuard } from '../shared/guards/admin-page.guard';
+import { AdminPageGuard } from '../../shared/guards/admin-page.guard';
 
 // 관리자 페이지 전체를 ADMIN 전용으로 제한 (비로그인/비관리자는 /login 으로 리다이렉트)
 @UseGuards(AdminPageGuard)

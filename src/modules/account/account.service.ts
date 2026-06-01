@@ -10,7 +10,7 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Account } from './entities/account.entity';
-import { rethrowDbError } from '../shared/exceptions/db-error.util';
+import { rethrowDbError } from '../../shared/exceptions/db-error.util';
 
 const SALT_ROUNDS = 10;
 
@@ -37,9 +37,10 @@ export class AccountService {
       dto.roleCode,
     );
     if (!roleCodeId) {
-      throw new BadRequestException(
-        `존재하지 않는 역할입니다: ${dto.roleCode}`,
-      );
+      throw new BadRequestException({
+        key: 'account.errors.role_not_found',
+        args: { roleCode: dto.roleCode },
+      });
     }
 
     const hashed = await bcrypt.hash(dto.password, SALT_ROUNDS);
@@ -53,7 +54,10 @@ export class AccountService {
         useYn: dto.useYn,
       });
     } catch (error) {
-      rethrowDbError(error, `이미 존재하는 로그인 ID 입니다: ${dto.loginId}`);
+      rethrowDbError(error, {
+        key: 'account.errors.login_id_exists',
+        args: { loginId: dto.loginId },
+      });
     }
 
     await this.accountRepository.addRole(account.accountId, roleCodeId);
@@ -93,20 +97,23 @@ export class AccountService {
 
   async findOne(id: number) {
     const account = await this.accountRepository.findById(id);
-    if (!account) throw new NotFoundException('존재하지 않는 계정입니다.');
+    if (!account) throw new NotFoundException('account.errors.not_found');
     return toView(account);
   }
 
   async update(id: number, dto: UpdateAccountDto) {
     const account = await this.accountRepository.findById(id);
-    if (!account) throw new NotFoundException('존재하지 않는 계정입니다.');
+    if (!account) throw new NotFoundException('account.errors.not_found');
 
     // roleCode 는 account_role(별도 테이블)로 처리, 나머지는 account 컬럼 업데이트
     const { roleCode, ...fields } = dto;
     if (roleCode) {
       const roleCodeId = await this.accountRepository.findRoleCodeId(roleCode);
       if (!roleCodeId) {
-        throw new BadRequestException(`존재하지 않는 역할입니다: ${roleCode}`);
+        throw new BadRequestException({
+          key: 'account.errors.role_not_found',
+          args: { roleCode },
+        });
       }
       await this.accountRepository.replaceRole(id, roleCodeId);
     }
@@ -121,7 +128,7 @@ export class AccountService {
   // 계정 비활성화 (소프트 삭제: useYn = 'N')
   async deactivate(id: number) {
     const account = await this.accountRepository.findById(id);
-    if (!account) throw new NotFoundException('존재하지 않는 계정입니다.');
+    if (!account) throw new NotFoundException('account.errors.not_found');
     await this.accountRepository.update(id, { useYn: 'N' });
     return { accountId: id, useYn: 'N' };
   }
@@ -129,10 +136,12 @@ export class AccountService {
   // 비밀번호 변경 (셀프): 현재 비밀번호 검증 후 새 비밀번호 해싱
   async changePassword(accountId: number, dto: ChangePasswordDto) {
     const account = await this.accountRepository.findById(accountId);
-    if (!account) throw new NotFoundException('존재하지 않는 계정입니다.');
+    if (!account) throw new NotFoundException('account.errors.not_found');
     const matched = await bcrypt.compare(dto.currentPassword, account.password);
     if (!matched) {
-      throw new UnauthorizedException('현재 비밀번호가 올바르지 않습니다.');
+      throw new UnauthorizedException(
+        'account.errors.current_password_mismatch',
+      );
     }
     const hashed = await bcrypt.hash(dto.newPassword, SALT_ROUNDS);
     await this.accountRepository.update(accountId, { password: hashed });

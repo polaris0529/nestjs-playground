@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "not_found": "Account not found.",
+    "role_not_found": "Role does not exist: {roleCode}",
+    "current_password_mismatch": "Current password is incorrect.",
+    "login_id_exists": "Login ID already exists: {loginId}"
+  }
+}

@@ -3,13 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-
-// JWT 페이로드 형태
-interface JwtPayload {
-  sub: number;
-  loginId: string;
-  roles: string[];
-}
+import { JwtPayload } from '../../../shared/types/auth.types';
 
 // 쿠키(access_token)에서 토큰을 추출한다. SSR 페이지 이동 시 Authorization 헤더가 없으므로 쿠키 우선.
 function cookieExtractor(req: Request): string | null {

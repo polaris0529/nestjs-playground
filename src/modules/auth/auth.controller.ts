@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -11,12 +12,13 @@ import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { AuthService, AuthTokens } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 
 const ACCESS_COOKIE = 'access_token';
 const REFRESH_COOKIE = 'refresh_token';
 
 // Presentation 계층: 인증(로그인/리프레시/로그아웃/현재 사용자) API
+@ApiTags('인증')
 @Controller('auth')
 export class AuthController {
   constructor(

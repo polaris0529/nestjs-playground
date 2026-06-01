@@ -4,16 +4,11 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AccountService } from '../account/account.service';
 import { LoginDto } from './dto/login.dto';
+import { JwtPayload } from '../../shared/types/auth.types';
 
 export interface AuthTokens {
   accessToken: string;
   refreshToken: string;
-  loginId: string;
-  roles: string[];
-}
-
-interface TokenPayload {
-  sub: number;
   loginId: string;
   roles: string[];
 }
@@ -31,15 +26,11 @@ export class AuthService {
   async login(dto: LoginDto): Promise<AuthTokens> {
     const account = await this.accountService.findByLoginId(dto.loginId);
     if (!account || account.useYn !== 'Y') {
-      throw new UnauthorizedException(
-        '아이디 또는 비밀번호가 올바르지 않습니다.',
-      );
+      throw new UnauthorizedException('auth.errors.invalid_credentials');
     }
     const matched = await bcrypt.compare(dto.password, account.password);
     if (!matched) {
-      throw new UnauthorizedException(
-        '아이디 또는 비밀번호가 올바르지 않습니다.',
-      );
+      throw new UnauthorizedException('auth.errors.invalid_credentials');
     }
 
     await this.accountService.updateLastLogin(account.accountId);
@@ -50,20 +41,20 @@ export class AuthService {
   // 리프레시: refresh 토큰 검증 → 계정 재조회(최신 역할) → 토큰 회전
   async refresh(refreshToken: string | undefined): Promise<AuthTokens> {
     if (!refreshToken) {
-      throw new UnauthorizedException('리프레시 토큰이 없습니다.');
+      throw new UnauthorizedException('auth.errors.refresh_missing');
     }
-    let payload: TokenPayload;
+    let payload: JwtPayload;
     try {
-      payload = this.jwtService.verify<TokenPayload>(refreshToken, {
+      payload = this.jwtService.verify<JwtPayload>(refreshToken, {
         secret: this.config.get<string>('jwt.refreshSecret'),
       });
     } catch {
-      throw new UnauthorizedException('유효하지 않은 리프레시 토큰입니다.');
+      throw new UnauthorizedException('auth.errors.refresh_invalid');
     }
 
     const account = await this.accountService.findByLoginId(payload.loginId);
     if (!account || account.useYn !== 'Y') {
-      throw new UnauthorizedException('비활성 계정입니다.');
+      throw new UnauthorizedException('auth.errors.inactive_account');
     }
     const roles = (account.roles ?? []).map((r) => r.roleCode.code);
     return this.issueTokens(account.accountId, account.loginId, roles);
@@ -75,7 +66,7 @@ export class AuthService {
     loginId: string,
     roles: string[],
   ): Promise<AuthTokens> {
-    const payload: TokenPayload = { sub, loginId, roles };
+    const payload: JwtPayload = { sub, loginId, roles };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: this.config.get<string>('jwt.secret'),
       expiresIn: this.config.get<number>('jwt.accessExpiresIn'),

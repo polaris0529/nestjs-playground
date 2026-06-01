@@ -2,12 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
-
-interface TokenPayload {
-  sub: number;
-  loginId: string;
-  roles: string[];
-}
+import { JwtPayload } from '../types/auth.types';
 
 // 공통 미들웨어: SSR 페이지에서 access 쿠키를 해석해 req.user / res.locals.user 를 채운다.
 // access 가 만료됐고 refresh 가 유효하면 새 access 쿠키를 발급(silent refresh)한다.
@@ -33,11 +28,11 @@ export class AuthContextMiddleware implements NestMiddleware {
     next();
   }
 
-  private resolveUser(req: Request, res: Response): TokenPayload | null {
+  private resolveUser(req: Request, res: Response): JwtPayload | null {
     const accessToken = req.cookies?.access_token as string | undefined;
     if (accessToken) {
       try {
-        return this.jwtService.verify<TokenPayload>(accessToken);
+        return this.jwtService.verify<JwtPayload>(accessToken);
       } catch {
         // 만료/위변조 → refresh 로 재발급 시도
       }
@@ -46,7 +41,7 @@ export class AuthContextMiddleware implements NestMiddleware {
     const refreshToken = req.cookies?.refresh_token as string | undefined;
     if (!refreshToken) return null;
     try {
-      const payload = this.jwtService.verify<TokenPayload>(refreshToken, {
+      const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
         secret: this.config.get<string>('jwt.refreshSecret'),
       });
       const newAccess = this.jwtService.sign(

@@ -1,0 +1,10 @@
+{
+  "errors": {
+    "group_not_found": "존재하지 않는 그룹입니다.",
+    "code_not_found": "존재하지 않는 코드입니다.",
+    "group_in_use": "사용 중인 그룹입니다.",
+    "code_in_use": "사용 중인 코드입니다.",
+    "group_code_exists": "이미 존재하는 그룹코드입니다: {groupCode}",
+    "code_exists": "해당 그룹에 이미 존재하는 코드입니다: {code}"
+  }
+}

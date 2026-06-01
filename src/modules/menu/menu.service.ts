@@ -7,7 +7,7 @@ import { MenuRepository } from './menu.repository';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Menu } from './entities/menu.entity';
-import { rethrowDbError } from '../shared/exceptions/db-error.util';
+import { rethrowDbError } from '../../shared/exceptions/db-error.util';
 
 // 사이드바 렌더링용 트리 노드: 메뉴 엔티티 + 하위 메뉴 배열
 export type MenuTreeNode = Menu & { children: MenuTreeNode[] };
@@ -63,7 +63,7 @@ export class MenuService {
     if (dto.parentMenuId) {
       const parent = await this.menuRepository.findById(dto.parentMenuId);
       if (!parent) {
-        throw new BadRequestException('상위 메뉴가 존재하지 않습니다.');
+        throw new BadRequestException('menu.errors.parent_not_found');
       }
       menuLevel = parent.menuLevel + 1;
     }
@@ -71,13 +71,16 @@ export class MenuService {
     try {
       return await this.menuRepository.create({ ...dto, menuLevel });
     } catch (error) {
-      rethrowDbError(error, `이미 존재하는 메뉴코드입니다: ${dto.menuCode}`);
+      rethrowDbError(error, {
+        key: 'menu.errors.menu_code_exists',
+        args: { menuCode: dto.menuCode },
+      });
     }
   }
 
   async findOne(id: number) {
     const menu = await this.menuRepository.findById(id);
-    if (!menu) throw new NotFoundException('존재하지 않는 메뉴입니다.');
+    if (!menu) throw new NotFoundException('menu.errors.not_found');
     return menu;
   }
 
@@ -92,13 +95,11 @@ export class MenuService {
         patch.menuLevel = 1;
       } else {
         if (dto.parentMenuId === id) {
-          throw new BadRequestException(
-            '자기 자신을 상위로 지정할 수 없습니다.',
-          );
+          throw new BadRequestException('menu.errors.parent_self');
         }
         const parent = await this.menuRepository.findById(dto.parentMenuId);
         if (!parent) {
-          throw new BadRequestException('상위 메뉴가 존재하지 않습니다.');
+          throw new BadRequestException('menu.errors.parent_not_found');
         }
         patch.menuLevel = parent.menuLevel + 1;
       }

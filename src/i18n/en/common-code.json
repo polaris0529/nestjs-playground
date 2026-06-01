@@ -1,0 +1,10 @@
+{
+  "errors": {
+    "group_not_found": "Code group not found.",
+    "code_not_found": "Code not found.",
+    "group_in_use": "The group is in use.",
+    "code_in_use": "The code is in use.",
+    "group_code_exists": "Group code already exists: {groupCode}",
+    "code_exists": "Code already exists in this group: {code}"
+  }
+}

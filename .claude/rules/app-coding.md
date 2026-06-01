@@ -79,6 +79,17 @@ Each module is responsible for its own initialization (env loading, config, midd
 ## Format / Lint
 - Follow `npm run format` (Prettier) and `npm run lint` (ESLint) standards.
 
+## i18n (Internationalization) — Recommended
+
+Use `nestjs-i18n` when multilingual support is needed. The core principle: **layers below Presentation deal in translation keys, not localized strings.** Translation happens at the edge.
+
+- **Setup**: register `I18nModule.forRoot({ fallbackLanguage: 'ko', resolvers: [new HeaderResolver(['accept-language'])] })` globally. Translation files live under `src/i18n/<lang>/*.json`.
+- **Errors → keys, translate in a filter**: Service throws a translation **key**, not a message — e.g. `throw new ConflictException('auth.errors.email_exists')`. A global i18n exception filter reads the request `Accept-Language` and translates the key for the response. (Integrate with the existing `HttpErrorFilter`.) Services stay language-agnostic.
+- **Success messages**: use `I18nService.t(key, { lang })` with `I18nContext.current()?.lang ?? 'ko'` to translate response messages.
+- **DTO validation**: put i18n keys in the decorator `message` — e.g. `@IsEmail({}, { message: 'validation.email_invalid' })`. The framework translates them.
+- **No HTTP context (scheduler / push)**: there is no `Accept-Language`. Look up the recipient's language from DB (e.g. an `account.language` column set at login) and pass it explicitly: `this.i18n.t(key, { lang })`.
+- Key namespacing: `<domain>.<category>.<name>` (e.g. `auth.errors.email_exists`, `validation.code_length`).
+
 ---
 
 # 앱 코딩 규칙 (NestJS)
@@ -161,3 +172,14 @@ Each module is responsible for its own initialization (env loading, config, midd
 
 ## 포맷 / 린트
 - `npm run format`(Prettier), `npm run lint`(ESLint) 기준을 따른다.
+
+## i18n (다국어) — 권장
+
+다국어가 필요하면 `nestjs-i18n` 을 사용한다. 핵심 원칙: **Presentation 아래 계층은 지역화된 문자열이 아니라 번역 키만 다룬다.** 번역은 가장 바깥(요청 경계)에서 수행한다.
+
+- **설정**: `I18nModule.forRoot({ fallbackLanguage: 'ko', resolvers: [new HeaderResolver(['accept-language'])] })` 를 전역 등록한다. 번역 파일은 `src/i18n/<lang>/*.json` 에 둔다.
+- **에러 → 키, 필터에서 번역**: Service 는 메시지가 아니라 번역 **키**를 던진다 — 예: `throw new ConflictException('auth.errors.email_exists')`. 전역 i18n 예외 필터가 요청의 `Accept-Language` 를 읽어 키를 번역해 응답한다(기존 `HttpErrorFilter` 와 통합). Service 는 언어를 신경 쓰지 않는다.
+- **성공 메시지**: `I18nContext.current()?.lang ?? 'ko'` 로 언어를 얻어 `I18nService.t(key, { lang })` 로 번역한다.
+- **DTO 검증**: 데코레이터 `message` 에 i18n 키를 넣는다 — 예: `@IsEmail({}, { message: 'validation.email_invalid' })`. 프레임워크가 번역한다.
+- **HTTP 컨텍스트 없음(스케줄러/푸시)**: `Accept-Language` 가 없으므로 수신자 언어를 DB(예: 로그인 시 설정한 `account.language` 컬럼)에서 조회해 명시적으로 넘긴다: `this.i18n.t(key, { lang })`.
+- 키 네임스페이스: `<도메인>.<분류>.<이름>` (예: `auth.errors.email_exists`, `validation.code_length`).

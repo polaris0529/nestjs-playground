@@ -22,8 +22,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "typeorm-ts-node-commonjs -d src/data-source.ts",
-    "migration:generate": "npm run typeorm -- migration:generate src/migrations/Migration",
+    "typeorm": "typeorm-ts-node-commonjs -d src/database/data-source.ts",
+    "migration:generate": "npm run typeorm -- migration:generate src/database/migrations/Migration",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert"
   },
@@ -43,6 +43,7 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "hbs": "^4.2.1",
+    "nestjs-i18n": "^10.6.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.21.0",

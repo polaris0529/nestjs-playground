@@ -1,0 +1,12 @@
+{
+  "success": "Success.",
+  "error": "An error occurred.",
+  "unauthorized": "Authentication required.",
+  "forbidden": "You do not have permission.",
+  "not_found": "Resource not found.",
+  "errors": {
+    "internal": "An internal server error occurred.",
+    "bad_reference": "The referenced resource does not exist.",
+    "csrf_invalid": "Invalid CSRF token."
+  }
+}

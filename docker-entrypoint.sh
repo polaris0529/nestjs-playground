@@ -4,7 +4,7 @@ set -e
 # 마이그레이션 실행
 echo "[Migration] Running..."
 node -e "
-  const ds = require('./dist/data-source.js').default;
+  const ds = require('./dist/database/data-source.js').default;
   ds.initialize()
     .then(() => ds.runMigrations())
     .then(() => { console.log('[Migration] Done'); process.exit(0); })

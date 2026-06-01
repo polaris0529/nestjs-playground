@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -12,13 +13,14 @@ import {
 import { CommonCodeService } from './common-code.service';
 import { CreateCommonCodeDto } from './dto/create-common-code.dto';
 import { UpdateCommonCodeDto } from './dto/update-common-code.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
-import { RolesGuard } from '../shared/guards/roles.guard';
-import { Roles } from '../shared/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
+import { RolesGuard } from '../../shared/guards/roles.guard';
+import { Roles } from '../../shared/decorators/roles.decorator';
 
 // Presentation 계층: 공통코드 리소스 REST API (관리자 전용)
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
+@ApiTags('공통코드')
 @Controller('common-codes')
 export class CommonCodeController {
   constructor(private readonly commonCodeService: CommonCodeService) {}

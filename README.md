@@ -19,27 +19,28 @@ NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/
 - **메뉴 관리**: 트리 구조(부모-자식) CRUD, 사이드바 동적 렌더링(접이식 폴더)
 - **계정 관리**: 생성·수정·역할 변경·비활성화, 본인 비밀번호 변경
 - **대시보드**: 로그인 시 통계 요약(계정/메뉴/코드)
+- **다국어(i18n)**: `Accept-Language` 기반, 예외 메시지를 전역 필터에서 키→요청 언어로 번역 (ko/en)
 
 ## 프로젝트 구조 (레이어드)
 
 ```
 src/
-├── <feature>/                 # 기능 모듈 (auth, account, common-code, menu, admin)
-│   ├── *.controller.ts        # Presentation — HTTP 라우팅
-│   ├── *.service.ts           # Application — 비즈니스 흐름
-│   ├── *.repository.ts        # Infrastructure — TypeORM 캡슐화
-│   ├── dto/ , entities/
-│   └── *.module.ts
+├── modules/                   # 도메인 기능 모듈
+│   └── <feature>/             # auth, account, common-code, menu, admin
+│       ├── *.controller.ts    # Presentation — HTTP 라우팅
+│       ├── *.service.ts       # Application — 비즈니스 흐름
+│       ├── *.repository.ts    # Infrastructure — TypeORM 캡슐화
+│       ├── dto/ , entities/
+│       └── *.module.ts
 ├── shared/                    # 횡단 관심사
 │   ├── guards/ (JwtAuth, Roles, AdminPage)
-│   ├── interceptors/ (Logging)
-│   ├── filters/ (HttpError)
+│   ├── interceptors/ (Logging)   filters/ (HttpError)
 │   ├── middleware/ (Logger, Auth, Csrf, MenuNav)
-│   ├── decorators/ (Roles)
-│   └── exceptions/
+│   ├── decorators/ (Roles)   exceptions/   types/
 ├── config/                    # app.config / typeorm.config / swagger.config
-├── migrations/                # 스키마 + 시드 마이그레이션
-├── data-source.ts , main.ts
+├── database/                  # data-source.ts + migrations/ (스키마·시드)
+├── i18n/                      # 번역 리소스 (ko, en)
+├── main.ts  app.module.ts  app.controller.ts  app.service.ts  # 부트스트랩
 views/        # hbs 템플릿 (partials/ 공통 조각, admin/ 관리 화면)
 public/       # 정적 자산 (css, js)
 ```
@@ -185,7 +186,7 @@ docker compose up -d --build app   # entrypoint 가 마이그레이션 자동 �
 
 프로젝트 코딩/서비스/UI/배포 규칙은 `.claude/rules/` 에 있으며 `CLAUDE.md` 에서 import 한다.
 
-- `app-coding.md` — 레이어드 아키텍처 / REST / DTO·엔티티 / 마이그레이션
+- `app-coding.md` — 레이어드 아키텍처 / REST / DTO·엔티티 / 마이그레이션 / i18n
 - `app-service.md` — 모듈 구성 / 인증·인가 / Swagger
 - `ui-design.md` — hbs 템플릿 / 테마 컬러 / 동적 메뉴 / 관리 UI
 - `git-deploy.md` — git 운영 / 커밋 규칙 / 배포 흐름
