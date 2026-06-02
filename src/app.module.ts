@@ -10,6 +10,7 @@ import { CommonCodeModule } from './modules/common-code/common-code.module';
 import { AccountModule } from './modules/account/account.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { MetricsModule } from './modules/metrics/metrics.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminController } from './modules/admin/admin.controller';
@@ -38,6 +39,7 @@ import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
     AccountModule,
     AdminModule,
     MenuModule,
+    MetricsModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -559,6 +559,202 @@ body.sidebar-collapsed .app-footer {
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
+   🧑‍💻 PORTFOLIO — 포트폴리오 랜딩 페이지 (독립 레이아웃, 사이드바 없음)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+
+.portfolio-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, var(--color-gray-700) 100%);
+  color: var(--color-white);
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-md);
+}
+
+.portfolio-name {
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.portfolio-name small {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-secondary);
+  margin-left: var(--space-sm);
+}
+
+.portfolio-role {
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-sm);
+}
+
+.portfolio-bio {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-md);
+  max-width: 480px;
+}
+
+.portfolio-gh-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.portfolio-gh-link:hover {
+  color: var(--color-text);
+}
+
+.portfolio-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.portfolio-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.portfolio-badges .badge {
+  font-size: var(--font-size-sm);
+  padding: var(--space-xs) var(--space-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.portfolio-exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.portfolio-exp-company {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.portfolio-exp-period {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.portfolio-exp-jobtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-sm);
+}
+
+.portfolio-exp-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.portfolio-exp-list li {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: 3px 0 3px var(--space-md);
+  position: relative;
+  line-height: var(--line-height-relaxed);
+}
+
+.portfolio-exp-list li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--color-text-muted);
+}
+
+.portfolio-project-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.portfolio-project-card {
+  background-color: var(--color-gray-50);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.portfolio-project-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.portfolio-project-period {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.portfolio-project-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.portfolio-project-list li {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  padding: 2px 0 2px var(--space-md);
+  position: relative;
+}
+
+.portfolio-project-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--color-text-muted);
+}
+
+.portfolio-cta {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-2xl);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 576px) {
+  .portfolio-project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
    🗂️ ADMIN — 관리 목록/테이블/모달 (테마 토큰 일관 적용)
    ════════════════════════════════════════════════════════════════════════════ */
 

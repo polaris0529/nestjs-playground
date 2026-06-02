@@ -10,6 +10,7 @@ NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/
 - **DB/ORM**: PostgreSQL 16, TypeORM (마이그레이션 기반, `synchronize: false`)
 - **인증**: Passport JWT (access + refresh, httpOnly 쿠키), bcrypt 해싱, Double-submit CSRF
 - **뷰**: Handlebars(hbs) SSR + Bootstrap 5 + DataTables
+- **모니터링**: prom-client + @willsoto/nestjs-prometheus — `/metrics` Prometheus pull exporter
 - **배포**: Docker / docker-compose, Nginx Proxy Manager 뒤단
 
 ## 주요 기능
@@ -20,6 +21,7 @@ NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/
 - **계정 관리**: 생성·수정·역할 변경·비활성화, 본인 비밀번호 변경
 - **대시보드**: 로그인 시 통계 요약(계정/메뉴/코드)
 - **다국어(i18n)**: `Accept-Language` 기반, 예외 메시지를 전역 필터에서 키→요청 언어로 번역 (ko/en)
+- **메트릭**: `GET /metrics` — Prometheus pull 방식, Node.js 기본 메트릭(CPU·메모리·GC·이벤트루프) 수집, `app="workflow"` 레이블 포함
 
 ## 프로젝트 구조 (레이어드)
 
