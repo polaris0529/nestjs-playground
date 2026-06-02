@@ -33,6 +33,7 @@ services:
     networks:
       - internal
       - nginx-proxy
+      - monitoring
     depends_on:
       db:
         condition: service_healthy
@@ -56,3 +57,6 @@ networks:
   nginx-proxy:
     external: true
     name: nginx-net
+  monitoring:
+    external: true
+    name: monitoring
