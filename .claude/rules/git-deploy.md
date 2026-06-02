@@ -38,6 +38,15 @@ Proceed with commit/push? (yes to continue)
 
 Before pushing, update `README.md` if the change affects anything it documents — features, project structure, env vars, run/migration/deploy commands, default account, or rule files. Keep the README accurate as part of the push, not as a follow-up.
 
+## README — No Hosting Info
+
+**Never write actual hosting information in `README.md`.** This includes real domain names, public URLs, IP addresses, or any externally routable address.
+
+- Allowed: Docker internal network topology — container names, internal ports, network names (e.g. `workflow-app:3000`, `nginx-net`)
+- Not allowed: real domains (e.g. `polaris9309.store`), public IPs, actual URLs of running services
+
+Architecture diagrams must use generic placeholders (`<app-domain>`, `<api-domain>`) or container names only. Proxy host mapping tables must not list real domain entries.
+
 ## What to Commit / Exclude
 - **Never commit**: `.env`, `dist/`, `deploy/`, `node_modules/`
 - **Always commit**: `src/`, `views/`, `public/`, `migrations/`, config files
@@ -114,6 +123,15 @@ docker compose up -d app   # replace container (DB volume preserved)
 ## README 동기화 (푸시 시)
 
 푸시 전, 변경이 `README.md` 가 기술하는 내용(기능·프로젝트 구조·환경변수·실행/마이그레이션/배포 명령·기본 계정·규칙 문서)에 영향을 주면 README 를 함께 갱신한다. README 정합성은 사후 작업이 아니라 푸시의 일부로 유지한다.
+
+## README — 호스팅 정보 기재 금지
+
+**`README.md` 에 실제 호스팅 정보를 절대 작성하지 않는다.** 실제 도메인명, 공개 URL, IP 주소, 외부에서 접근 가능한 주소가 모두 해당된다.
+
+- 허용: Docker 내부 네트워크 토폴로지 — 컨테이너명, 내부 포트, 네트워크명 (예: `workflow-app:3000`, `nginx-net`)
+- 금지: 실제 도메인 (예: `polaris9309.store`), 공개 IP, 운영 중인 서비스의 실제 URL
+
+아키텍처 다이어그램은 제네릭 플레이스홀더(`<app-domain>`, `<api-domain>`) 또는 컨테이너명만 사용한다. 프록시 호스트 매핑 테이블에 실제 도메인을 기재하지 않는다.
 
 ## 커밋 포함/제외 대상
 - **절대 커밋 금지**: `.env`, `dist/`, `deploy/`, `node_modules/`
