@@ -1,8 +1,9 @@
 :root {
   /* ─── Primary Colors ─── */
-  --color-primary: #0d6efd;
-  --color-primary-hover: #0b5ed7;
-  --color-primary-light: #e7f1ff;
+  --color-primary: #E07B39;
+  --color-primary-hover: #C9692C;
+  --color-primary-light: #FBEADB;
+  --color-secondary: #3B6FB0;
 
   /* ─── Semantic Colors ─── */
   --color-success: #198754;
@@ -23,20 +24,20 @@
   --color-gray-900: #111827;
 
   /* ─── Sidebar Colors ─── */
-  --color-sidebar-bg: #1f2937;
-  --color-sidebar-border: #374151;
-  --color-sidebar-hover: #374151;
-  --color-sidebar-active: #0d6efd;
-  --color-sidebar-text: #d1d5db;
+  --color-sidebar-bg: #0F1B2D;
+  --color-sidebar-border: #1E2D45;
+  --color-sidebar-hover: #1A2A42;
+  --color-sidebar-active: #E07B39;
+  --color-sidebar-text: #A7B4C8;
 
   /* ─── Content Colors ─── */
-  --color-content-bg: #eef1f5;
+  --color-content-bg: #ECF0F6;
   --color-white: #ffffff;
   --color-card: #ffffff;
-  --color-text: #111827;
-  --color-text-secondary: #6b7280;
-  --color-text-muted: #9ca3af;
-  --color-border: #e5e7eb;
+  --color-text: #11203A;
+  --color-text-secondary: #5A6B85;
+  --color-text-muted: #8A98AE;
+  --color-border: #DAE1EC;
 
   /* ─── Dimensions ─── */
   --sidebar-width: 272px;
@@ -71,8 +72,8 @@
   --radius-full: 9999px;
 
   /* ─── Typography ─── */
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-family-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'IBM Plex Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -141,14 +142,26 @@ body {
   align-items: center;
   gap: var(--space-sm);
   color: var(--color-white);
+  font-family: var(--font-family-mono);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-lg);
+  letter-spacing: 0.02em;
   text-decoration: none;
   white-space: nowrap;
   width: var(--sidebar-width);
   transition: opacity var(--transition-base);
   padding-right: var(--space-md);
   border-right: 1px solid var(--color-sidebar-border);
+}
+
+.app-header .brand::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background-color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .app-header .brand svg,
@@ -207,7 +220,12 @@ body {
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
-  background: linear-gradient(180deg, var(--color-sidebar-bg) 0%, var(--color-gray-900) 100%);
+  background-color: var(--color-sidebar-bg);
+  background-image:
+    linear-gradient(rgba(167, 180, 200, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(167, 180, 200, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, var(--color-sidebar-bg) 0%, var(--color-gray-900) 100%);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
   border-right: 1px solid var(--color-sidebar-border);
   overflow-y: auto;
   z-index: 1020;
@@ -244,14 +262,20 @@ body {
 }
 
 .app-sidebar .nav-label {
-  color: var(--color-gray-500);
+  font-family: var(--font-family-mono);
+  color: var(--color-primary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   padding: var(--space-md) var(--space-md) var(--space-sm);
-  opacity: 0.8;
+  opacity: 0.9;
   transition: opacity var(--transition-base);
+}
+
+.app-sidebar .nav-label::before {
+  content: '// ';
+  color: var(--color-primary);
 }
 
 /* 네비게이션 링크 */
@@ -291,7 +315,7 @@ body {
 }
 
 .app-sidebar .nav-link.active {
-  background-color: rgba(13, 110, 253, 0.15);
+  background-color: rgba(224, 123, 57, 0.15);
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
 }
@@ -373,6 +397,15 @@ body {
   flex: 1;
   padding: var(--space-xl);
   overflow-y: auto;
+}
+
+/* 섹션/페이지 제목 모노 아이브로우 마커 */
+.page-header h1::before,
+.portfolio-section-title::before {
+  content: '// ';
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
 }
 
 /* 페이지 헤더 */
@@ -567,7 +600,7 @@ body.sidebar-collapsed .app-footer {
   width: 80px;
   height: 80px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, var(--color-gray-700) 100%);
+  background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, var(--color-primary) 140%);
   color: var(--color-white);
   font-size: 2rem;
   font-weight: var(--font-weight-bold);
@@ -776,7 +809,11 @@ body.sidebar-collapsed .app-footer {
 .admin-table thead th {
   background-color: var(--color-gray-50);
   color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
   font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   text-align: left;
   padding: var(--space-sm) var(--space-md);
   border-bottom: 1px solid var(--color-border);
@@ -797,8 +834,10 @@ body.sidebar-collapsed .app-footer {
   display: inline-block;
   padding: 2px 8px;
   border-radius: var(--radius-full);
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
 }
 
 .badge-use.on {
@@ -940,6 +979,7 @@ body.sidebar-collapsed .app-footer {
 .app-content .stat-card {
   background: linear-gradient(135deg, var(--color-sidebar-bg) 0%, var(--color-gray-900) 100%);
   border: none;
+  border-top: 2px solid var(--color-primary);
   color: var(--color-white);
 }
 
@@ -949,6 +989,7 @@ body.sidebar-collapsed .app-footer {
 }
 
 .stat-card .stat-value {
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-white);
@@ -1168,4 +1209,39 @@ body.sidebar-collapsed .app-footer {
 
 .animate-slide-in-left {
   animation: slideInLeft var(--transition-base) forwards;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   🎨 BOOTSTRAP 컬러 유틸 오버라이드 (Blueprint Console 팔레트 일관성)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+
+.bg-info {
+  background-color: var(--color-secondary) !important;
+}
+
+.bg-dark {
+  background-color: var(--color-sidebar-bg) !important;
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
 }

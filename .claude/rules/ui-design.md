@@ -58,18 +58,32 @@ views/
 
 ## Theme Colors
 
-Dark sidebar + Light content theme.
+Blueprint Console theme — ink navy chrome + cool paper content + copper signal accent.
 
 | Token | Hex | Usage |
 |---|---|---|
-| `--color-sidebar-bg` | `#212529` | Sidebar background |
-| `--color-sidebar-text` | `#adb5bd` | Sidebar text |
-| `--color-content-bg` | `#eef1f5` | Main content background (deeper so white cards pop) |
+| `--color-sidebar-bg` | `#0F1B2D` | Sidebar / header chrome (ink navy) |
+| `--color-sidebar-text` | `#A7B4C8` | Sidebar text |
+| `--color-content-bg` | `#ECF0F6` | Main content background (cool paper) |
 | `--color-card` | `#ffffff` | Card / panel background |
-| `--color-text` | `#212529` | Default text |
-| `--color-text-muted` | `#6c757d` | Secondary text |
-| `--color-primary` | `#0d6efd` | Primary action buttons, links |
+| `--color-text` | `#11203A` | Default text (ink) |
+| `--color-text-muted` | `#8A98AE` | Secondary text |
+| `--color-primary` | `#E07B39` | Primary action / signal accent (copper) |
+| `--color-secondary` | `#3B6FB0` | Steel-blue secondary |
+| `--color-border` | `#DAE1EC` | Borders / dividers |
 | `--color-success` | `#198754` | Success state |
+
+## Typography & Signature (Blueprint Console)
+
+- Web fonts via Google Fonts CDN: `IBM Plex Mono` (labels / numbers / structural type), `Inter` (body). Loaded in `views/partials/head.hbs` before `layout.css`.
+- Tokens: `--font-family-base: 'Inter', ...`; `--font-family-mono: 'IBM Plex Mono', ...`.
+- Monospace structural type: sidebar `.nav-label`, page/section title eyebrows, `.admin-table thead`, `.stat-value`, `.badge-use` use IBM Plex Mono (uppercase, tracked). Prose/body stays Inter.
+- Signature elements:
+  - Sidebar blueprint grid: low-contrast CSS `linear-gradient` grid over the ink background.
+  - `// SECTION` mono eyebrow: copper mono marker on `.page-header h1`, `.portfolio-section-title`, `.nav-label`.
+  - Terminal-tone stat: `.stat-value` large mono; `.stat-card` top copper hairline.
+  - nav active: `.nav-link.active::before` left tick in copper.
+- Bootstrap color utilities (`.btn-primary`, `.bg-primary/secondary/info/dark`, `.text-primary`) are re-themed in `layout.css` (which loads after `bootstrap.min.css`). `.bg-success`/`.bg-warning` keep semantic Bootstrap defaults.
 
 ## Strict Rules
 
@@ -150,18 +164,32 @@ views/
 
 ## 테마 컬러
 
-다크 사이드바 + 라이트 콘텐츠 테마.
+Blueprint Console 테마 — 잉크 네이비 크롬 + 쿨 페이퍼 콘텐츠 + 쿠퍼 시그널 액센트.
 
 | 토큰 | Hex | 용도 |
 |---|---|---|
-| `--color-sidebar-bg` | `#212529` | 사이드바 배경 |
-| `--color-sidebar-text` | `#adb5bd` | 사이드바 텍스트 |
-| `--color-content-bg` | `#eef1f5` | 메인 콘텐츠 배경 (흰 카드 대비 위해 진하게) |
+| `--color-sidebar-bg` | `#0F1B2D` | 사이드바/헤더 크롬 (잉크 네이비) |
+| `--color-sidebar-text` | `#A7B4C8` | 사이드바 텍스트 |
+| `--color-content-bg` | `#ECF0F6` | 메인 콘텐츠 배경 (쿨 페이퍼) |
 | `--color-card` | `#ffffff` | 카드/패널 배경 |
-| `--color-text` | `#212529` | 기본 텍스트 |
-| `--color-text-muted` | `#6c757d` | 보조 텍스트 |
-| `--color-primary` | `#0d6efd` | 주요 액션 버튼, 링크 |
+| `--color-text` | `#11203A` | 기본 텍스트 (잉크) |
+| `--color-text-muted` | `#8A98AE` | 보조 텍스트 |
+| `--color-primary` | `#E07B39` | 주요 액션/시그널 액센트 (쿠퍼) |
+| `--color-secondary` | `#3B6FB0` | 스틸 블루 보조 |
+| `--color-border` | `#DAE1EC` | 테두리/구분선 |
 | `--color-success` | `#198754` | 성공 상태 |
+
+## 타이포그래피 & 시그니처 (Blueprint Console)
+
+- 웹폰트는 Google Fonts CDN: `IBM Plex Mono`(라벨·수치·구조 타이포), `Inter`(본문). `views/partials/head.hbs`에서 `layout.css`보다 앞에 로드한다.
+- 토큰: `--font-family-base: 'Inter', ...`; `--font-family-mono: 'IBM Plex Mono', ...`.
+- 모노스페이스 구조 타이포: 사이드바 `.nav-label`, 페이지/섹션 제목 아이브로우, `.admin-table thead`, `.stat-value`, `.badge-use`는 IBM Plex Mono(대문자·자간). 문장/본문은 Inter.
+- 시그니처 요소:
+  - 사이드바 블루프린트 그리드: 잉크 배경 위 저대비 CSS `linear-gradient` 격자.
+  - `// SECTION` 모노 아이브로우: `.page-header h1`, `.portfolio-section-title`, `.nav-label`에 쿠퍼 모노 마커.
+  - 터미널 톤 stat: `.stat-value` 큰 모노; `.stat-card` 상단 쿠퍼 hairline.
+  - nav active: `.nav-link.active::before` 좌측 틱을 쿠퍼로.
+- Bootstrap 컬러 유틸(`.btn-primary`, `.bg-primary/secondary/info/dark`, `.text-primary`)은 `layout.css`(bootstrap.min.css 뒤 로드)에서 리테마. `.bg-success`/`.bg-warning`은 semantic 의미로 Bootstrap 기본 유지.
 
 ## 강한 규제 사항
 
