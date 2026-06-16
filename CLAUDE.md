@@ -119,5 +119,7 @@ If service type is unknown, default to api rules.
 
 @.claude/rules/app-coding.md
 @.claude/rules/app-service.md
+@.claude/rules/safe-coding.md
 @.claude/rules/ui-design.md
 @.claude/rules/git-deploy.md
+@.claude/rules/skills-reference.md
