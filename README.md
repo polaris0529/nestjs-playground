@@ -184,5 +184,7 @@ docker compose up -d --build app   # entrypoint 가 마이그레이션 자동 �
 
 - `app-coding.md` — 레이어드 아키텍처 / REST / DTO·엔티티 / 마이그레이션 / i18n
 - `app-service.md` — 모듈 구성 / 인증·인가 / Swagger
+- `safe-coding.md` — 보안·안정성 코딩 규칙 / 생성 코드 리뷰 체크리스트
 - `ui-design.md` — hbs 템플릿 / 테마 컬러 / 동적 메뉴 / 관리 UI
 - `git-deploy.md` — git 운영 / 커밋 규칙 / 배포 흐름
+- `skills-reference.md` — 프로젝트 관련 설치 스킬 참조
