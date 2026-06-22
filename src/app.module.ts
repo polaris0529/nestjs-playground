@@ -10,10 +10,12 @@ import { CommonCodeModule } from './modules/common-code/common-code.module';
 import { AccountModule } from './modules/account/account.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { CalendarModule } from './modules/calendar/calendar.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminController } from './modules/admin/admin.controller';
+import { CalendarPageController } from './modules/calendar/calendar-page.controller';
 import { LoggerMiddleware } from './shared/middleware/logger.middleware';
 import { MenuNavMiddleware } from './shared/middleware/menu-nav.middleware';
 import { AuthContextMiddleware } from './shared/middleware/auth-context.middleware';
@@ -39,6 +41,7 @@ import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
     AccountModule,
     AdminModule,
     MenuModule,
+    CalendarModule,
     MetricsModule,
   ],
 })
@@ -50,6 +53,6 @@ export class AppModule implements NestModule {
     // AuthContextMiddleware 가 먼저 실행되어 req.user 를 채워야 AdminPageGuard 가 동작한다.
     consumer
       .apply(AuthContextMiddleware, MenuNavMiddleware)
-      .forRoutes(AppController, AdminController);
+      .forRoutes(AppController, AdminController, CalendarPageController);
   }
 }

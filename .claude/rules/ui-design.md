@@ -75,8 +75,8 @@ Blueprint Console theme — ink navy chrome + cool paper content + copper signal
 
 ## Typography & Signature (Blueprint Console)
 
-- Web fonts via Google Fonts CDN: `IBM Plex Mono` (labels / numbers / structural type), `Inter` (body). Loaded in `views/partials/head.hbs` before `layout.css`.
-- Tokens: `--font-family-base: 'Inter', ...`; `--font-family-mono: 'IBM Plex Mono', ...`.
+- Web fonts via Google Fonts CDN: `IBM Plex Mono` (labels / numbers / structural type), `Noto Sans KR` (Korean UI/body), `Inter` (Latin fallback). Loaded in `views/partials/head.hbs` before `layout.css`.
+- Tokens: `--font-family-base: 'Noto Sans KR', 'Inter', ...`; `--font-family-mono: 'IBM Plex Mono', 'Noto Sans KR', ...`.
 - Monospace structural type: sidebar `.nav-label`, page/section title eyebrows, `.admin-table thead`, `.stat-value`, `.badge-use` use IBM Plex Mono (uppercase, tracked). Prose/body stays Inter.
 - Signature elements:
   - Sidebar blueprint grid: low-contrast CSS `linear-gradient` grid over the ink background.
@@ -181,8 +181,8 @@ Blueprint Console 테마 — 잉크 네이비 크롬 + 쿨 페이퍼 콘텐츠 +
 
 ## 타이포그래피 & 시그니처 (Blueprint Console)
 
-- 웹폰트는 Google Fonts CDN: `IBM Plex Mono`(라벨·수치·구조 타이포), `Inter`(본문). `views/partials/head.hbs`에서 `layout.css`보다 앞에 로드한다.
-- 토큰: `--font-family-base: 'Inter', ...`; `--font-family-mono: 'IBM Plex Mono', ...`.
+- 웹폰트는 Google Fonts CDN: `IBM Plex Mono`(라벨·수치·구조 타이포), `Noto Sans KR`(한국어 UI·본문), `Inter`(라틴 fallback). `views/partials/head.hbs`에서 `layout.css`보다 앞에 로드한다.
+- 토큰: `--font-family-base: 'Noto Sans KR', 'Inter', ...`; `--font-family-mono: 'IBM Plex Mono', 'Noto Sans KR', ...`.
 - 모노스페이스 구조 타이포: 사이드바 `.nav-label`, 페이지/섹션 제목 아이브로우, `.admin-table thead`, `.stat-value`, `.badge-use`는 IBM Plex Mono(대문자·자간). 문장/본문은 Inter.
 - 시그니처 요소:
   - 사이드바 블루프린트 그리드: 잉크 배경 위 저대비 CSS `linear-gradient` 격자.

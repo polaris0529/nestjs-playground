@@ -1,0 +1,12 @@
+{
+  "errors": {
+    "invalid_date": "Invalid date format.",
+    "invalid_time": "Invalid time format.",
+    "invalid_time_range": "The start time must be earlier than the end time.",
+    "invalid_range": "The start date must be earlier than the end date.",
+    "range_too_large": "The calendar query range cannot exceed 370 days.",
+    "day_not_found": "Calendar day not found.",
+    "personal_task_not_found": "Personal task not found.",
+    "common_task_not_found": "Common task not found."
+  }
+}

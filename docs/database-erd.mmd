@@ -1,0 +1,103 @@
+erDiagram
+  account {
+    bigint account_id PK
+    varchar_30 login_id UK
+    varchar_100 password
+    varchar_30 account_name
+    timestamp last_login_at "nullable"
+    char_1 use_yn "default Y"
+    timestamp created_at
+    timestamp updated_at
+  }
+  account_role {
+    bigint account_role_id PK
+    bigint account_id FK, UK
+    bigint role_code_id FK, UK
+    timestamp created_at
+  }
+  calendar {
+    date calendar_date PK
+    varchar_3 day_of_week
+    boolean is_holiday "default false"
+    varchar_100 holiday_name "nullable"
+    boolean is_weekend "default false"
+    boolean is_workday "default true"
+    timestamp created_at
+    timestamp updated_at
+  }
+  common_code {
+    bigint code_id PK
+    bigint code_group_id FK, UK
+    varchar_30 code UK
+    varchar_50 code_name
+    varchar_200 description "nullable"
+    integer sort_order "default 0"
+    char_1 use_yn "default Y"
+    timestamp created_at
+    timestamp updated_at
+  }
+  common_code_group {
+    bigint code_group_id PK
+    varchar_30 group_code UK
+    varchar_50 group_name
+    varchar_200 description "nullable"
+    char_1 use_yn "default Y"
+    timestamp created_at
+    timestamp updated_at
+  }
+  common_task {
+    uuid common_task_id PK
+    date calendar_date FK
+    varchar_100 title
+    text content "nullable"
+    varchar_50 category "nullable"
+    varchar_20 status "default TODO"
+    time start_time "nullable"
+    time end_time "nullable"
+    boolean is_deleted "default false"
+    timestamp deleted_at "nullable"
+    timestamp created_at
+    timestamp updated_at
+  }
+  menu {
+    bigint menu_id PK
+    bigint parent_menu_id FK "nullable"
+    varchar_30 menu_code UK
+    varchar_50 menu_name
+    varchar_200 menu_url "nullable"
+    varchar_30 menu_type
+    varchar_30 open_type "nullable"
+    integer menu_level "default 1"
+    integer sort_order "default 0"
+    char_1 use_yn "default Y"
+    char_1 delete_yn "default N"
+    bigint created_by FK "nullable"
+    bigint updated_by FK "nullable"
+    timestamp created_at
+    timestamp updated_at
+  }
+  personal_task {
+    uuid personal_task_id PK
+    date calendar_date FK
+    bigint user_id FK
+    varchar_100 title
+    text content "nullable"
+    varchar_20 status "default TODO"
+    varchar_10 priority "nullable, default NORMAL"
+    time start_time "nullable"
+    time end_time "nullable"
+    timestamp completed_at "nullable"
+    boolean is_deleted "default false"
+    timestamp deleted_at "nullable"
+    timestamp created_at
+    timestamp updated_at
+  }
+  account ||--o{ account_role : "account_id"
+  account ||--o{ menu : "created_by"
+  account ||--o{ menu : "updated_by"
+  account ||--o{ personal_task : "user_id"
+  calendar ||--o{ common_task : "calendar_date"
+  calendar ||--o{ personal_task : "calendar_date"
+  common_code ||--o{ account_role : "role_code_id"
+  common_code_group ||--o{ common_code : "code_group_id"
+  menu ||--o{ menu : "parent_menu_id"

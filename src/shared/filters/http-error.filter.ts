@@ -21,6 +21,9 @@ export class HttpErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
+    if (res.headersSent) {
+      return;
+    }
     const lang = I18nContext.current(host)?.lang;
 
     const status =

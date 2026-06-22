@@ -18,6 +18,7 @@ NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/
 - **메뉴 관리**: 트리 구조(부모-자식) CRUD, 사이드바 동적 렌더링(접이식 폴더)
 - **계정 관리**: 생성·수정·역할 변경·비활성화, 본인 비밀번호 변경
 - **대시보드**: 로그인 시 통계 요약(계정/메뉴/코드)
+- **캘린더**: FullCalendar(CDN) 월간 뷰, 공통 캘린더 기준일 + 개인/공통 태스크 관리(등록·수정·삭제, soft-delete). `/calendar`(로그인), `/admin/calendar`(ADMIN: 공휴일·공통 태스크 편집). 한국 시간(`Asia/Seoul`) 기준
 - **다국어(i18n)**: `Accept-Language` 기반, 예외 메시지를 전역 필터에서 키→요청 언어로 번역 (ko/en)
 - **메트릭**: `GET /metrics` — Prometheus pull 방식, Node.js 기본 메트릭(CPU·메모리·GC·이벤트루프) 수집, `app="workflow"` 레이블 포함
 
@@ -26,7 +27,7 @@ NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/
 ```
 src/
 ├── modules/                   # 도메인 기능 모듈
-│   └── <feature>/             # auth, account, common-code, menu, admin
+│   └── <feature>/             # auth, account, common-code, menu, admin, calendar
 │       ├── *.controller.ts    # Presentation — HTTP 라우팅
 │       ├── *.service.ts       # Application — 비즈니스 흐름
 │       ├── *.repository.ts    # Infrastructure — TypeORM 캡슐화
