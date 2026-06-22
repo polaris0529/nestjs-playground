@@ -1,148 +1,36 @@
 <!DOCTYPE html>
 <html lang="ko">
-{{> head title="대시보드"}}
+{{> head title="일정보드"}}
 <body>
   {{> header}}
-  {{> sidebar page="dashboard"}}
+  {{> sidebar page="schedule"}}
 
   <div class="app-main">
     <div class="app-content">
-      {{#if user}}
-        <div class="page-header">
-          <div>
-            <h1>안녕하세요, {{me.accountName}}님</h1>
-            <p>역할: {{me.roles}} · 최근 로그인: {{me.lastLoginText}}</p>
-          </div>
+      <div class="page-header">
+        <div>
+          <h1>공통 일정보드</h1>
+          <p>공휴일과 공통 업무 일정입니다. 누구나 조회할 수 있습니다.</p>
         </div>
-
-        <div class="row g-3">
-          <div class="col-md-3 col-6">
-            <div class="card stat-card shadow-md rounded-lg h-100">
-              <div class="card-body">
-                <div class="stat-label">활성 계정</div>
-                <div class="stat-value">{{stats.accountActive}}</div>
-                <div class="stat-sub">전체 {{stats.accountTotal}}</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 col-6">
-            <div class="card stat-card shadow-md rounded-lg h-100">
-              <div class="card-body">
-                <div class="stat-label">메뉴</div>
-                <div class="stat-value">{{stats.menus}}</div>
-                <div class="stat-sub">활성 메뉴</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 col-6">
-            <div class="card stat-card shadow-md rounded-lg h-100">
-              <div class="card-body">
-                <div class="stat-label">공통코드 그룹</div>
-                <div class="stat-value">{{stats.codeGroups}}</div>
-                <div class="stat-sub">그룹 수</div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 col-6">
-            <div class="card stat-card shadow-md rounded-lg h-100">
-              <div class="card-body">
-                <div class="stat-label">공통코드</div>
-                <div class="stat-value">{{stats.codes}}</div>
-                <div class="stat-sub">코드 수</div>
-              </div>
-            </div>
-          </div>
+        <div class="d-flex gap-2">
+          <a href="/about" class="btn btn-outline-secondary">소개</a>
+          {{#if user}}
+            <a href="/dashboard" class="btn btn-outline-primary">대시보드</a>
+          {{/if}}
         </div>
-      {{else}}
+      </div>
 
-        <div class="portfolio-hero card shadow-sm rounded-lg mb-4">
-          <div class="card-body">
-            <div class="portfolio-avatar">L</div>
-            <h1 class="portfolio-name">이규민 <small>Lee Gyumin</small></h1>
-            <p class="portfolio-role">Backend Developer</p>
-            <p class="portfolio-bio">백엔드 중심의 웹 개발자로, Java/Spring Boot 기반 시스템 설계부터 Docker 배포까지 전반적인 개발 업무를 수행합니다.</p>
-            <a href="https://github.com/polaris0529" target="_blank" rel="noopener" class="portfolio-gh-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-              </svg>
-              github.com/polaris0529
-            </a>
-          </div>
-        </div>
-
-        <div class="row g-4 mb-4">
-          <div class="col-md-6">
-            <div class="card shadow-sm rounded-lg h-100">
-              <div class="card-body">
-                <h2 class="portfolio-section-title">Tech Stack</h2>
-                <div class="portfolio-badges">
-                  <span class="badge bg-secondary">Java</span>
-                  <span class="badge bg-success">Spring Boot</span>
-                  <span class="badge bg-primary">MySQL</span>
-                  <span class="badge bg-info text-dark">Docker</span>
-                  <span class="badge bg-warning text-dark">JavaScript</span>
-                  <span class="badge bg-secondary">Node.js</span>
-                  <span class="badge bg-dark">NestJS</span>
-                  <span class="badge bg-secondary">PostgreSQL</span>
-                  <span class="badge bg-secondary">REST API</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card shadow-sm rounded-lg h-100">
-              <div class="card-body">
-                <h2 class="portfolio-section-title">Experience</h2>
-                <div class="portfolio-exp-header">
-                  <span class="portfolio-exp-company">주식회사 아이트리소프트</span>
-                  <span class="portfolio-exp-period">2021.11 – 2026.03</span>
-                </div>
-                <p class="portfolio-exp-jobtitle">주임 · 웹개발 · 4년 5개월</p>
-                <ul class="portfolio-exp-list">
-                  <li>Java(Spring Boot) 기반 백엔드 시스템 설계 및 개발</li>
-                  <li>MySQL 데이터베이스 모델링 및 최적화 쿼리 작성</li>
-                  <li>RESTful API 개발 및 연동 서비스 구현</li>
-                  <li>Docker 기반 개발 환경 구성 및 배포 자동화</li>
-                  <li>운영 서비스 장애 분석 및 개선 작업 수행</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card shadow-sm rounded-lg mb-4">
-          <div class="card-body">
-            <h2 class="portfolio-section-title">Projects</h2>
-            <div class="portfolio-project-grid">
-              <div class="portfolio-project-card">
-                <p class="portfolio-project-name">피에스앤마케팅 모바일 그룹웨어</p>
-                <p class="portfolio-project-period">2024.07 – 2024.08 · 2개월 · (주)허니소프트 연계</p>
-                <ul class="portfolio-project-list">
-                  <li>화면 설계 및 서비스 기획</li>
-                  <li>산출물 검수 및 유지 보수</li>
-                </ul>
-              </div>
-              <div class="portfolio-project-card">
-                <p class="portfolio-project-name">피에스앤마케팅 WKI 시스템 구축</p>
-                <p class="portfolio-project-period">2025.02 – 2025.03 · 2개월 · (주)허니소프트 연계</p>
-                <ul class="portfolio-project-list">
-                  <li>화면 설계 및 서비스 기획</li>
-                  <li>Docker 기반 오픈소스 서비스 제공 및 유지 보수</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="text-center mt-4">
-          <a href="/login" class="btn btn-primary px-4">관리자 로그인</a>
-        </div>
-
-      {{/if}}
+      <section class="calendar-surface" aria-label="공통 캘린더">
+        <div id="calendarMessage" class="calendar-message" role="alert"></div>
+        <div id="workflowCalendar"></div>
+      </section>
     </div>
     {{> footer version="0.0.1"}}
   </div>
 
   {{> scripts}}
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.21/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.21/locales/ko.global.min.js"></script>
+  <script src="/js/calendar/common-calendar.js"></script>
 </body>
 </html>

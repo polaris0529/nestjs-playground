@@ -17,8 +17,10 @@ NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/
 - **공통코드 관리**: 그룹/코드 CRUD (SELECTBOX 기반 입력, 검증)
 - **메뉴 관리**: 트리 구조(부모-자식) CRUD, 사이드바 동적 렌더링(접이식 폴더)
 - **계정 관리**: 생성·수정·역할 변경·비활성화, 본인 비밀번호 변경
-- **대시보드**: 로그인 시 통계 요약(계정/메뉴/코드)
-- **캘린더**: FullCalendar(CDN) 월간 뷰, 공통 캘린더 기준일 + 개인/공통 태스크 관리(등록·수정·삭제, soft-delete). `/calendar`(로그인), `/admin/calendar`(ADMIN: 공휴일·공통 태스크 편집). 한국 시간(`Asia/Seoul`) 기준
+- **메인 일정보드**: 메인 `/` 는 공통 일정보드(공통 캘린더). 공휴일·공통 태스크를 누구나 조회(무인증 `GET /calendar/common-events`)
+- **대시보드**: `/dashboard`(로그인) — 통계 요약(계정/메뉴/코드)
+- **소개 페이지**: `/about`(공개) — 포트폴리오
+- **캘린더**: FullCalendar(CDN) 월간 뷰, 공통 캘린더 기준일 + 개인/공통 태스크 관리(등록·수정·삭제, soft-delete). `/calendar`(로그인), `/admin/calendar`(ADMIN: 공휴일·공통 태스크 편집). 공통 태스크 CRUD는 ADMIN 전용, 조회는 공개. 한국 시간(`Asia/Seoul`) 기준
 - **다국어(i18n)**: `Accept-Language` 기반, 예외 메시지를 전역 필터에서 키→요청 언어로 번역 (ko/en)
 - **메트릭**: `GET /metrics` — Prometheus pull 방식, Node.js 기본 메트릭(CPU·메모리·GC·이벤트루프) 수집, `app="workflow"` 레이블 포함
 

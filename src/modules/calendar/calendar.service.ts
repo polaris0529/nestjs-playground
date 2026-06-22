@@ -117,6 +117,27 @@ export class CalendarService {
     ];
   }
 
+  // 공개(무인증) 공통 캘린더: 공휴일 + 공통 태스크만. 쓰기 부작용을 피하려 ensureDays 미호출.
+  async findCommonEvents(
+    query: CalendarRangeQueryDto,
+  ): Promise<CalendarEvent[]> {
+    const days = await this.calendarRepository.findByRange(
+      query.startDate,
+      query.endDate,
+    );
+    const commonTasks = await this.commonTaskRepository.findByRange(
+      query.startDate,
+      query.endDate,
+    );
+
+    return [
+      ...days
+        .filter((day) => day.isHoliday)
+        .map((day) => this.holidayEvent(day)),
+      ...commonTasks.map((task) => this.commonTaskEvent(task)),
+    ];
+  }
+
   private holidayEvent(day: CalendarDay): CalendarEvent {
     return {
       id: `holiday:${day.calendarDate}`,

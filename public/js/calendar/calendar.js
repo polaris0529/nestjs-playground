@@ -64,7 +64,9 @@
       const target = event.target;
       if (!(target instanceof Element)) return;
       const closeButton = target.closest('[data-modal-close]');
-      const modalOverlay = target.classList.contains('modal-overlay') ? target : null;
+      const modalOverlay = target.classList.contains('modal-overlay')
+        ? target
+        : null;
       if (closeButton || modalOverlay) {
         closeTaskModal();
       }
@@ -124,10 +126,21 @@
       const selectedHoliday = document.getElementById('selectedHoliday');
       if (!day) return;
 
+      // 공휴일이거나 일요일(SUN)이면 빨간색으로 표기한다.
+      const isRedDay = !!day.isHoliday || day.dayOfWeek === 'SUN';
       setText(selectedDateLabel, day.calendarDate);
       setText(selectedDayOfWeek, dayLabel(day.dayOfWeek));
       setText(selectedWorkday, day.isWorkday ? '근무일' : '휴무일');
-      setText(selectedHoliday, day.isHoliday ? day.holidayName || '공휴일' : '아님');
+      setText(
+        selectedHoliday,
+        day.isHoliday ? day.holidayName || '공휴일' : '아님',
+      );
+      if (selectedDateLabel) {
+        selectedDateLabel.classList.toggle('text-danger', isRedDay);
+      }
+      if (selectedDayOfWeek) {
+        selectedDayOfWeek.classList.toggle('text-danger', isRedDay);
+      }
 
       const form = document.getElementById('calendarDayForm');
       if (!form) return;
@@ -230,7 +243,11 @@
           isWorkday: checkedOf('dayIsWorkday'),
         })
         .then(function () {
-          showMessage('calendarMessage', '날짜 정보가 저장되었습니다.', 'success');
+          showMessage(
+            'calendarMessage',
+            '날짜 정보가 저장되었습니다.',
+            'success',
+          );
           state.calendar.refetchEvents();
           if (window.workflowCalendarState) {
             window.workflowCalendarState.loadDay(calendarDate);

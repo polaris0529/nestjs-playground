@@ -18,16 +18,23 @@ import { Roles } from '../../shared/decorators/roles.decorator';
 import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @ApiTags('캘린더')
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('calendar')
 export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
 
+  // 공개(무인증): 공통 캘린더 조회 — 공휴일 + 공통 태스크만
+  @Get('common-events')
+  findCommonEvents(@Query() query: CalendarRangeQueryDto) {
+    return this.calendarService.findCommonEvents(query);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('days')
   findDays(@Query() query: CalendarRangeQueryDto) {
     return this.calendarService.findDays(query);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('events')
   findEvents(
     @Req() req: AuthenticatedRequest,
@@ -36,6 +43,7 @@ export class CalendarController {
     return this.calendarService.findEvents(req.user.accountId, query);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Patch('days/:date')
   updateDay(

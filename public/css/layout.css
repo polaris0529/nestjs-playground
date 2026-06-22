@@ -445,7 +445,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-left: var(--sidebar-width);
+  margin-left: 0;
   transition: margin-left var(--transition-base) ease;
 }
 
