@@ -86,7 +86,7 @@ docker compose up -d --build      # base + docker-compose.override.yml(로컬 �
 # 앱: http://localhost:3000  /  DB 툴: localhost:5433
 ```
 
-> `docker-compose.yml`(base)은 원격 안전을 위해 호스트 포트를 노출하지 않는다. 로컬 포트(앱 3000, DB 5433)는 gitignore 대상인 `docker-compose.override.yml` 에서만 노출된다.
+> `docker-compose.yml`(base)은 DB 포트 5432를 노출한다(원격 서버 로컬 접속용). 앱 포트(3000)는 gitignore 대상인 `docker-compose.override.yml` 에서만 노출된다. 로컬에서는 override가 DB 5433도 추가 노출한다.
 
 소스만 watch 로 띄우려면(별도 DB 필요):
 
@@ -156,7 +156,7 @@ docker compose up -d --build app   # entrypoint 가 마이그레이션 자동 �
    (NestJS)           (Spring)      (HTTPS, 내부전용) (NPM 관리 콘솔)
         │                   │
         ▼                   ▼
- workflow-db:5432    spring-app-db:5432   ← DB 는 nginx-net 미연결, 외부 노출 없음
+ workflow-db:5432    spring-app-db:5432   ← DB 는 nginx-net 미연결, 호스트 5432 노출(로컬 접속용)
  (internal net)      (internal net)
 ```
 
