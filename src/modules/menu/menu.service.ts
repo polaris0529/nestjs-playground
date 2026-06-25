@@ -46,7 +46,7 @@ export class MenuService {
     menus.forEach((menu) => {
       const node = byId.get(Number(menu.menuId))!;
       const parent =
-        menu.parentMenuId != null ? byId.get(Number(menu.parentMenuId)) : null;
+        menu.parentMenuId !== 0 ? byId.get(Number(menu.parentMenuId)) : null;
       if (parent) {
         parent.children.push(node);
       } else {
@@ -90,8 +90,8 @@ export class MenuService {
 
     // 상위 메뉴 변경 시 menuLevel 재계산 (자기참조·존재 검증)
     if (dto.parentMenuId !== undefined) {
-      if (dto.parentMenuId === null) {
-        patch.parentMenuId = null;
+      if (dto.parentMenuId === 0) {
+        patch.parentMenuId = 0;
         patch.menuLevel = 1;
       } else {
         if (dto.parentMenuId === id) {

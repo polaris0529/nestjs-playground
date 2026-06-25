@@ -15,7 +15,7 @@ import { CalendarRangeQueryDto } from './dto/calendar-range-query.dto';
 import { CreateCommonTaskDto } from './dto/create-common-task.dto';
 import { UpdateCommonTaskDto } from './dto/update-common-task.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
-import { RolesGuard } from '../../shared/guards/roles.guard';
+import { RolesGuard } from '../../shared/guards/roles-auth.guard';
 import { Roles } from '../../shared/decorators/roles.decorator';
 
 @ApiTags('공통 태스크')

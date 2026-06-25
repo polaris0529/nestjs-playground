@@ -14,28 +14,32 @@ import { AuthService, AuthTokens } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 
-const ACCESS_COOKIE = 'access_token';
-const REFRESH_COOKIE = 'refresh_token';
-
-// Presentation 계층: 인증(로그인/리프레시/로그아웃/현재 사용자) API
 @ApiTags('인증')
 @Controller('auth')
 export class AuthController {
+  private readonly accessCookieName: string;
+  private readonly refreshCookieName: string;
+
   constructor(
     private readonly authService: AuthService,
     private readonly config: ConfigService,
-  ) {}
+  ) {
+    this.accessCookieName =
+      config.get<string>('cookie.accessName') ?? 'access_token';
+    this.refreshCookieName =
+      config.get<string>('cookie.refreshName') ?? 'refresh_token';
+  }
 
   // access/refresh 토큰을 httpOnly 쿠키로 저장
   private setAuthCookies(res: Response, tokens: AuthTokens): void {
     const secure = this.config.get<string>('env') === 'production';
-    res.cookie(ACCESS_COOKIE, tokens.accessToken, {
+    res.cookie(this.accessCookieName, tokens.accessToken, {
       httpOnly: true,
       sameSite: 'lax',
       secure,
       maxAge: (this.config.get<number>('jwt.accessExpiresIn') ?? 1800) * 1000,
     });
-    res.cookie(REFRESH_COOKIE, tokens.refreshToken, {
+    res.cookie(this.refreshCookieName, tokens.refreshToken, {
       httpOnly: true,
       sameSite: 'lax',
       secure,
@@ -61,7 +65,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const tokens = await this.authService.refresh(
-      req.cookies?.refresh_token as string | undefined,
+      req.cookies?.[this.refreshCookieName] as string | undefined,
     );
     this.setAuthCookies(res, tokens);
     return { loginId: tokens.loginId, roles: tokens.roles };
@@ -70,8 +74,8 @@ export class AuthController {
   // 로그아웃 → 쿠키 제거 후 로그인 페이지로 이동 (헤더 폼 POST)
   @Post('logout')
   logout(@Res() res: Response) {
-    res.clearCookie(ACCESS_COOKIE);
-    res.clearCookie(REFRESH_COOKIE);
+    res.clearCookie(this.accessCookieName);
+    res.clearCookie(this.refreshCookieName);
     res.redirect('/login');
   }
 

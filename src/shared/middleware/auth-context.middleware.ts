@@ -9,10 +9,18 @@ import { JwtPayload } from '../types/auth.types';
 // 인증을 강제하지 않는다(차단은 가드 책임).
 @Injectable()
 export class AuthContextMiddleware implements NestMiddleware {
+  private readonly accessCookieName: string;
+  private readonly refreshCookieName: string;
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
-  ) {}
+  ) {
+    this.accessCookieName =
+      config.get<string>('cookie.accessName') ?? 'access_token';
+    this.refreshCookieName =
+      config.get<string>('cookie.refreshName') ?? 'refresh_token';
+  }
 
   use(req: Request, res: Response, next: NextFunction): void {
     const payload = this.resolveUser(req, res);
@@ -29,7 +37,9 @@ export class AuthContextMiddleware implements NestMiddleware {
   }
 
   private resolveUser(req: Request, res: Response): JwtPayload | null {
-    const accessToken = req.cookies?.access_token as string | undefined;
+    const accessToken = req.cookies?.[this.accessCookieName] as
+      | string
+      | undefined;
     if (accessToken) {
       try {
         return this.jwtService.verify<JwtPayload>(accessToken);
@@ -38,7 +48,9 @@ export class AuthContextMiddleware implements NestMiddleware {
       }
     }
 
-    const refreshToken = req.cookies?.refresh_token as string | undefined;
+    const refreshToken = req.cookies?.[this.refreshCookieName] as
+      | string
+      | undefined;
     if (!refreshToken) return null;
     try {
       const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
@@ -51,7 +63,7 @@ export class AuthContextMiddleware implements NestMiddleware {
           expiresIn: this.config.get<number>('jwt.accessExpiresIn'),
         },
       );
-      res.cookie('access_token', newAccess, {
+      res.cookie(this.accessCookieName, newAccess, {
         httpOnly: true,
         sameSite: 'lax',
         secure: this.config.get<string>('env') === 'production',

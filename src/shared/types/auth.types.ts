@@ -1,7 +1,6 @@
 import type { Request } from 'express';
 
 // 인증 관련 공용 타입 (가드·미들웨어·전략·컨트롤러 공용)
-
 // JWT 페이로드 (access/refresh 공통)
 export interface JwtPayload {
   sub: number;

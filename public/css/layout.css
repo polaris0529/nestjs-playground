@@ -400,15 +400,6 @@ body {
   overflow-y: auto;
 }
 
-/* 섹션/페이지 제목 모노 아이브로우 마커 */
-.page-header h1::before,
-.portfolio-section-title::before {
-  content: '// ';
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
-  color: var(--color-primary);
-}
-
 /* 페이지 헤더 */
 .page-header {
   display: flex;

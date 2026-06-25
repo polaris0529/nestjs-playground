@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,8 +14,9 @@ export class Menu {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'menu_id' })
   menuId: number;
 
-  @Column({ name: 'parent_menu_id', type: 'bigint', nullable: true })
-  parentMenuId: number | null;
+  // 0 = 최상위(루트). FK 제약 없음 — buildTree 가 직접 조립한다.
+  @Column({ name: 'parent_menu_id', type: 'bigint', default: 0 })
+  parentMenuId: number;
 
   @Column({ name: 'menu_code', length: 30, unique: true })
   menuCode: string;
@@ -57,11 +57,7 @@ export class Menu {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => Menu, (menu) => menu.children)
-  @JoinColumn({ name: 'parent_menu_id' })
-  parent: Menu | null;
-
-  @OneToMany(() => Menu, (menu) => menu.parent)
+  // 자기참조 관계는 buildTree 가 수동 조립하므로 데코레이터 없이 타입만 선언
   children: Menu[];
 
   @ManyToOne(() => Account)

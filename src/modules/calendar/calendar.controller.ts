@@ -13,7 +13,7 @@ import { CalendarService } from './calendar.service';
 import { CalendarRangeQueryDto } from './dto/calendar-range-query.dto';
 import { UpdateCalendarDayDto } from './dto/update-calendar-day.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
-import { RolesGuard } from '../../shared/guards/roles.guard';
+import { RolesGuard } from '../../shared/guards/roles-auth.guard';
 import { Roles } from '../../shared/decorators/roles.decorator';
 import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
@@ -28,13 +28,13 @@ export class CalendarController {
     return this.calendarService.findCommonEvents(query);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('days')
   findDays(@Query() query: CalendarRangeQueryDto) {
     return this.calendarService.findDays(query);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('events')
   findEvents(
     @Req() req: AuthenticatedRequest,

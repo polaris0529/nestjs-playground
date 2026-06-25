@@ -2,21 +2,18 @@ import {
   IsIn,
   IsInt,
   IsOptional,
-  IsPositive,
   IsString,
   Max,
   MaxLength,
   Min,
-  ValidateIf,
 } from 'class-validator';
 
-// 메뉴 수정 DTO — menuCode 는 변경 불가. parentMenuId 는 number(이동) 또는 null(최상위) 허용.
+// 메뉴 수정 DTO — menuCode 는 변경 불가. parentMenuId 는 0(최상위) 또는 양수(하위 이동) 허용.
 export class UpdateMenuDto {
   @IsOptional()
-  @ValidateIf((o: UpdateMenuDto) => o.parentMenuId !== null)
   @IsInt()
-  @IsPositive()
-  parentMenuId?: number | null;
+  @Min(0)
+  parentMenuId?: number;
 
   @IsOptional()
   @IsString()

@@ -16,4 +16,8 @@ export default () => ({
       10,
     ),
   },
+  cookie: {
+    accessName: process.env.COOKIE_ACCESS_NAME ?? 'access_token',
+    refreshName: process.env.COOKIE_REFRESH_NAME ?? 'refresh_token',
+  },
 });

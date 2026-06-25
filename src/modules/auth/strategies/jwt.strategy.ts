@@ -5,18 +5,17 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from '../../../shared/types/auth.types';
 
-// 쿠키(access_token)에서 토큰을 추출한다. SSR 페이지 이동 시 Authorization 헤더가 없으므로 쿠키 우선.
-function cookieExtractor(req: Request): string | null {
-  return (req?.cookies?.access_token as string | undefined) ?? null;
-}
-
 // Passport JWT 전략: 쿠키 또는 Authorization: Bearer <token> 를 검증하고 request.user 를 구성한다.
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
+    // 쿠키명을 config에서 읽어 클로저로 캡처한다. super() 내부라 this 접근 불가.
+    const accessCookieName =
+      config.get<string>('cookie.accessName') ?? 'access_token';
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        cookieExtractor,
+        (req: Request) =>
+          (req?.cookies?.[accessCookieName] as string | undefined) ?? null,
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
@@ -24,7 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // 반환값이 request.user 에 주입된다.
   validate(payload: JwtPayload) {
     return {
       accountId: payload.sub,

@@ -2,7 +2,6 @@ import {
   IsIn,
   IsInt,
   IsOptional,
-  IsPositive,
   IsString,
   Matches,
   Max,
@@ -13,10 +12,10 @@ import {
 // 메뉴 생성 요청 DTO — 모든 필드 검증 강제
 // menuLevel 은 클라이언트 입력을 신뢰하지 않고 서버에서 상위 메뉴 기준으로 계산한다.
 export class CreateMenuDto {
-  // 상위 메뉴: SELECTBOX 로 선택, 최상위면 미지정(null)
+  // 상위 메뉴: SELECTBOX 로 선택, 최상위면 0 또는 미지정
   @IsOptional()
   @IsInt()
-  @IsPositive()
+  @Min(0)
   parentMenuId?: number;
 
   // 메뉴코드: 대문자로 시작, 영대문자/숫자/_ 조합 (식별자)
