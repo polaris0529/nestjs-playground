@@ -1,26 +1,38 @@
-
 /**
- * 배포용 최소 파일만 deploy/ 폴더에 모음.
+ * 배포용 최소 파일만 .build/deploy/ 폴더에 모음.
  * 실행: npm run build 후 npm run deploy:prepare (또는 npm run deploy)
  */
 const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const deployDir = path.join(root, 'deploy');
+const distDir = path.join(root, '.build', 'dist');
+const deployDir = path.join(root, '.build', 'deploy');
 
-if (!fs.existsSync(path.join(root, 'dist'))) {
-  console.error('dist 없음. 먼저 npm run build 를 실행하세요.');
+if (!fs.existsSync(distDir)) {
+  console.error('.build/dist 없음. 먼저 npm run build 를 실행하세요.');
   process.exit(1);
 }
 
 fs.rmSync(deployDir, { recursive: true, force: true });
 fs.mkdirSync(deployDir, { recursive: true });
 
-fs.cpSync(path.join(root, 'dist'), path.join(deployDir, 'dist'), { recursive: true });
-fs.copyFileSync(path.join(root, 'package.json'), path.join(deployDir, 'package.json'));
+fs.cpSync(distDir, path.join(deployDir, 'dist'), { recursive: true });
+
+// 배포 패킷 안에서는 dist/ 가 최상위이므로 start:prod 경로를 패킷 기준으로 재작성한다.
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(root, 'package.json'), 'utf8'),
+);
+pkg.scripts['start:prod'] = 'node dist/main';
+fs.writeFileSync(
+  path.join(deployDir, 'package.json'),
+  JSON.stringify(pkg, null, 2) + '\n',
+);
 if (fs.existsSync(path.join(root, 'package-lock.json'))) {
-  fs.copyFileSync(path.join(root, 'package-lock.json'), path.join(deployDir, 'package-lock.json'));
+  fs.copyFileSync(
+    path.join(root, 'package-lock.json'),
+    path.join(deployDir, 'package-lock.json'),
+  );
 }
 
 // 런타임에 필요한 정적 자산 / hbs 뷰 템플릿 포함
@@ -31,9 +43,11 @@ for (const dir of ['views', 'public']) {
   }
 }
 
-console.log('배포 패킷 준비됨: deploy/  (dist + views + public + package.json)');
+console.log(
+  '배포 패킷 준비됨: .build/deploy/  (dist + views + public + package.json)',
+);
 console.log('');
 console.log('배포 서버에서:');
-console.log('  1. deploy/ 를 서버에 복사');
+console.log('  1. .build/deploy/ 를 서버에 복사');
 console.log('  2. npm install --production');
 console.log('  3. node dist/main (또는 PORT=3000 node dist/main)');

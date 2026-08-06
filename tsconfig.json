@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "es6",
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./.build/dist",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,

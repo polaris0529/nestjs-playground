@@ -16,10 +16,10 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY --from=builder /app/deploy ./
+COPY --from=builder /app/.build/deploy ./
 RUN npm ci --omit=dev
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 3000

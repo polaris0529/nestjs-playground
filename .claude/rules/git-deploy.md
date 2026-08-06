@@ -48,7 +48,7 @@ Before pushing, update `README.md` if the change affects anything it documents �
 Architecture diagrams must use generic placeholders (`<app-domain>`, `<api-domain>`) or container names only. Proxy host mapping tables must not list real domain entries.
 
 ## What to Commit / Exclude
-- **Never commit**: `.env`, `dist/`, `deploy/`, `node_modules/`
+- **Never commit**: `.env`, `.build/`, `node_modules/` — all build/deploy/test artifacts live under `.build/`
 - **Always commit**: `src/`, `views/`, `public/`, `migrations/`, config files
 - **Include in commit when changed**: `package.json`, `package-lock.json`, `tsconfig.json`
 
@@ -56,8 +56,8 @@ Architecture diagrams must use generic placeholders (`<app-domain>`, `<api-domai
 
 ```
 [local]
-npm run build          # nest build → dist/
-npm run deploy:prepare # dist/ + views/ + public/ → deploy/
+npm run build          # nest build → .build/dist/
+npm run deploy:prepare # .build/dist/ + views/ + public/ → .build/deploy/
 
 [Docker]
 docker compose build app   # Dockerfile 2-stage build
@@ -66,8 +66,8 @@ docker compose up -d app   # replace container (DB volume preserved)
 
 ### Dockerfile Overview
 - **Stage 1 (builder)**: `npm install` → `nest build` → `deploy:prepare`
-- **Stage 2 (runner)**: copies `deploy/` only → `npm ci --omit=dev`
-- Runtime artifacts in `deploy/`: `dist/`, `views/`, `public/`, `package.json`, `package-lock.json`
+- **Stage 2 (runner)**: copies `.build/deploy/` only → `npm ci --omit=dev`
+- Runtime artifacts in `.build/deploy/`: `dist/`, `views/`, `public/`, `package.json`, `package-lock.json` (the packet's own `start:prod` is rewritten to `node dist/main`)
 
 ### Docker Compose
 - `workflow-app` — NestJS app, port `3000→3000`
@@ -134,7 +134,7 @@ docker compose up -d app   # replace container (DB volume preserved)
 아키텍처 다이어그램은 제네릭 플레이스홀더(`<app-domain>`, `<api-domain>`) 또는 컨테이너명만 사용한다. 프록시 호스트 매핑 테이블에 실제 도메인을 기재하지 않는다.
 
 ## 커밋 포함/제외 대상
-- **절대 커밋 금지**: `.env`, `dist/`, `deploy/`, `node_modules/`
+- **절대 커밋 금지**: `.env`, `.build/`, `node_modules/` — 빌드/배포/테스트 산출물은 전부 `.build/` 하위에 둔다
 - **반드시 커밋**: `src/`, `views/`, `public/`, `migrations/`, 설정 파일
 - **변경 시 함께 커밋**: `package.json`, `package-lock.json`, `tsconfig.json`
 
@@ -142,8 +142,8 @@ docker compose up -d app   # replace container (DB volume preserved)
 
 ```
 [로컬]
-npm run build          # nest build → dist/
-npm run deploy:prepare # dist/ + views/ + public/ → deploy/
+npm run build          # nest build → .build/dist/
+npm run deploy:prepare # .build/dist/ + views/ + public/ → .build/deploy/
 
 [Docker]
 docker compose build app   # Dockerfile 2단계 빌드
@@ -152,8 +152,8 @@ docker compose up -d app   # 컨테이너 교체 기동 (DB 볼륨 유지)
 
 ### Dockerfile 구조
 - **Stage 1 (builder)**: `npm install` → `nest build` → `deploy:prepare`
-- **Stage 2 (runner)**: `deploy/` 만 복사 → `npm ci --omit=dev`
-- 런타임 필수 산출물 (`deploy/`): `dist/`, `views/`, `public/`, `package.json`, `package-lock.json`
+- **Stage 2 (runner)**: `.build/deploy/` 만 복사 → `npm ci --omit=dev`
+- 런타임 필수 산출물 (`.build/deploy/`): `dist/`, `views/`, `public/`, `package.json`, `package-lock.json` (패킷 내부 `start:prod` 는 `node dist/main` 으로 재작성됨)
 
 ### Docker Compose 구성
 - `workflow-app` — NestJS 앱, 포트 `3000→3000`

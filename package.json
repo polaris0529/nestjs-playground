@@ -12,7 +12,7 @@
     "start:dev": "nest start --watch",
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node .build/dist/main",
     "run": "npm run build && npm run start:prod",
     "deploy:prepare": "node scripts/pack-deploy.js",
     "deploy": "npm run build && npm run deploy:prepare",
@@ -22,7 +22,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "playwright test --config e2e/playwright.config.ts",
     "typeorm": "typeorm-ts-node-commonjs -d src/database/data-source.ts",
     "migration:generate": "npm run typeorm -- migration:generate src/database/migrations/Migration",
     "migration:run": "npm run typeorm -- migration:run",
@@ -99,7 +99,11 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "../.build/coverage",
     "testEnvironment": "node"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }

@@ -96,7 +96,7 @@ npm run start:dev
 
 ## DB 마이그레이션
 
-`synchronize: false` — 스키마 변경은 반드시 마이그레이션으로 처리한다. 컨테이너 기동 시 `docker-entrypoint.sh` 가 마이그레이션을 자동 실행한다.
+`synchronize: false` — 스키마 변경은 반드시 마이그레이션으로 처리한다. 컨테이너 기동 시 `docker/docker-entrypoint.sh` 가 마이그레이션을 자동 실행한다.
 
 ```bash
 npm run migration:generate    # 변경 감지해 생성
@@ -121,6 +121,7 @@ npm run migration:revert      # 롤백
 
 ```bash
 npm test          # Jest
+npm run test:e2e  # Playwright (e2e/, 로컬 인스턴스 :3100 필요)
 npm run lint      # ESLint (--fix)
 npm run format    # Prettier
 ```

@@ -2,15 +2,14 @@
 node_modules
 .git
 .github
-dist
-deploy
+.build
 .env
 .env.*
 !.env.example
+ansible
 *.log
 .cursor
 .vscode
-coverage
 .nyc_output
 *.md
 !README.md
