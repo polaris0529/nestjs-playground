@@ -20,7 +20,10 @@ test.describe('Blueprint Console theme', () => {
     );
     expect(bodyFont).toContain('Inter');
 
-    await page.screenshot({ path: 'e2e/__screenshots__/login.png', fullPage: true });
+    await page.screenshot({
+      path: 'e2e/__screenshots__/login.png',
+      fullPage: true,
+    });
   });
 
   test('portfolio: 쿠퍼 시그널 + 모노 브랜드 적용', async ({ page }) => {

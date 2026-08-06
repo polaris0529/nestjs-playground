@@ -15,7 +15,7 @@ export class AdminPageGuard implements CanActivate {
 
     if (user?.roles?.includes('ADMIN')) {
       return true;
-    }    
+    }
     throw new ForbiddenException('admin.errors.access_denied');
   }
 }

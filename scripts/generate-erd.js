@@ -62,7 +62,11 @@ function columnType(column) {
     return 'boolean';
   }
 
-  if (optionType === Date || column.mode === 'createDate' || column.mode === 'updateDate') {
+  if (
+    optionType === Date ||
+    column.mode === 'createDate' ||
+    column.mode === 'updateDate'
+  ) {
     return 'timestamp';
   }
 
@@ -76,7 +80,9 @@ function withLength(type, length) {
 function uniqueColumnNames(storage, target) {
   const names = new Set();
 
-  for (const unique of storage.uniques.filter((item) => item.target === target)) {
+  for (const unique of storage.uniques.filter(
+    (item) => item.target === target,
+  )) {
     for (const propertyName of unique.columns) {
       const column = storage.columns.find(
         (item) => item.target === target && item.propertyName === propertyName,
@@ -130,7 +136,10 @@ function columnComment(column) {
 }
 
 function relationLine(storage, tablesByTarget, relation) {
-  if (relation.relationType !== 'many-to-one' && relation.relationType !== 'one-to-one') {
+  if (
+    relation.relationType !== 'many-to-one' &&
+    relation.relationType !== 'one-to-one'
+  ) {
     return null;
   }
 
@@ -142,10 +151,15 @@ function relationLine(storage, tablesByTarget, relation) {
 
   const joinColumns = storage.joinColumns.filter(
     (joinColumn) =>
-      joinColumn.target === relation.target && joinColumn.propertyName === relation.propertyName,
+      joinColumn.target === relation.target &&
+      joinColumn.propertyName === relation.propertyName,
   );
-  const label = joinColumns.map((joinColumn) => joinColumn.name).filter(Boolean).join(', ');
-  const cardinality = relation.relationType === 'one-to-one' ? '||--||' : '||--o{';
+  const label = joinColumns
+    .map((joinColumn) => joinColumn.name)
+    .filter(Boolean)
+    .join(', ');
+  const cardinality =
+    relation.relationType === 'one-to-one' ? '||--||' : '||--o{';
 
   return `  ${tableName(targetTable)} ${cardinality} ${tableName(sourceTable)} : "${label || relation.propertyName}"`;
 }
@@ -163,7 +177,9 @@ function buildMermaid() {
   for (const table of tables) {
     const uniqueNames = uniqueColumnNames(storage, table.target);
     const foreignKeyNames = foreignKeyColumnNames(storage, table.target);
-    const columns = storage.columns.filter((column) => column.target === table.target);
+    const columns = storage.columns.filter(
+      (column) => column.target === table.target,
+    );
 
     lines.push(`  ${tableName(table)} {`);
     for (const column of columns) {
