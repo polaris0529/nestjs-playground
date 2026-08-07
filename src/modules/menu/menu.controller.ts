@@ -20,36 +20,36 @@ import { Roles } from '../../shared/decorators/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
 @ApiTags('메뉴')
-@Controller('menus')
+@Controller('menu')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
   // 메뉴 목록 조회 (상위 메뉴 SELECTBOX 용)
-  @Get()
+  @Get('items')
   findAll() {
     return this.menuService.findAll();
   }
 
   // 메뉴 단건 조회
-  @Get(':id')
+  @Get('items/:id')
   findOne(@Param('id') id: string) {
     return this.menuService.findOne(+id);
   }
 
   // 메뉴 생성
-  @Post()
+  @Post('items')
   create(@Body() dto: CreateMenuDto) {
     return this.menuService.create(dto);
   }
 
   // 메뉴 수정
-  @Patch(':id')
+  @Patch('items/:id')
   update(@Param('id') id: string, @Body() dto: UpdateMenuDto) {
     return this.menuService.update(+id, dto);
   }
 
   // 메뉴 삭제 (소프트)
-  @Delete(':id')
+  @Delete('items/:id')
   remove(@Param('id') id: string) {
     return this.menuService.remove(+id);
   }

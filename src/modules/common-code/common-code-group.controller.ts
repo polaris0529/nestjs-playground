@@ -20,36 +20,36 @@ import { Roles } from '../../shared/decorators/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
 @ApiTags('공통코드 그룹')
-@Controller('common-code-groups')
+@Controller('common-code')
 export class CommonCodeGroupController {
   constructor(private readonly commonCodeService: CommonCodeService) {}
 
   // 그룹 목록 조회 (공통코드 생성 화면 SELECTBOX 용)
-  @Get()
+  @Get('groups')
   findAll() {
     return this.commonCodeService.findAllGroups();
   }
 
   // 그룹 단건 조회
-  @Get(':id')
+  @Get('groups/:id')
   findOne(@Param('id') id: string) {
     return this.commonCodeService.findGroup(+id);
   }
 
   // 그룹 생성
-  @Post()
+  @Post('groups')
   create(@Body() dto: CreateCommonCodeGroupDto) {
     return this.commonCodeService.createGroup(dto);
   }
 
   // 그룹 수정
-  @Patch(':id')
+  @Patch('groups/:id')
   update(@Param('id') id: string, @Body() dto: UpdateCommonCodeGroupDto) {
     return this.commonCodeService.updateGroup(+id, dto);
   }
 
   // 그룹 삭제
-  @Delete(':id')
+  @Delete('groups/:id')
   remove(@Param('id') id: string) {
     return this.commonCodeService.removeGroup(+id);
   }

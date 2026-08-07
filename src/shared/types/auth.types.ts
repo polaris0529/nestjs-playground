@@ -8,7 +8,7 @@ export interface JwtPayload {
   roles: string[];
 }
 
-// 요청 컨텍스트에 주입되는 인증 사용자 (req.user / res.locals.user)
+// 요청 컨텍스트에 주입되는 인증 사용자 (req.user)
 export interface AuthUser {
   accountId: number;
   loginId: string;

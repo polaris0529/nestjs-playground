@@ -49,7 +49,7 @@ Architecture diagrams must use generic placeholders (`<app-domain>`, `<api-domai
 
 ## What to Commit / Exclude
 - **Never commit**: `.env`, `.build/`, `node_modules/` — all build/deploy/test artifacts live under `.build/`
-- **Always commit**: `src/`, `views/`, `public/`, `migrations/`, config files
+- **Always commit**: `src/`, `frontend/`, required config files, and migration files
 - **Include in commit when changed**: `package.json`, `package-lock.json`, `tsconfig.json`
 
 ## Build & Deploy Flow
@@ -57,7 +57,7 @@ Architecture diagrams must use generic placeholders (`<app-domain>`, `<api-domai
 ```
 [local]
 npm run build          # nest build → .build/dist/
-npm run deploy:prepare # .build/dist/ + views/ + public/ → .build/deploy/
+npm run deploy:prepare # .build/dist/ + frontend/dist/ → .build/deploy/
 
 [Docker]
 docker compose build app   # Dockerfile 2-stage build
@@ -67,10 +67,10 @@ docker compose up -d app   # replace container (DB volume preserved)
 ### Dockerfile Overview
 - **Stage 1 (builder)**: `npm install` → `nest build` → `deploy:prepare`
 - **Stage 2 (runner)**: copies `.build/deploy/` only → `npm ci --omit=dev`
-- Runtime artifacts in `.build/deploy/`: `dist/`, `views/`, `public/`, `package.json`, `package-lock.json` (the packet's own `start:prod` is rewritten to `node dist/main`)
+- Runtime artifacts in `.build/deploy/`: `dist/`, `frontend/dist/`, `package.json`, `package-lock.json`.
 
 ### Docker Compose
-- `workflow-app` — NestJS app, port `3000→3000`
+- `workflow-app` — NestJS app, internal port `3000` via Docker network
 - `workflow-db` — PostgreSQL 16, internal only (no exposed port)
 - DB data persisted in volume `workflow-db-data`
 - App waits for DB health check before starting (`depends_on: service_healthy`)
@@ -80,7 +80,7 @@ docker compose up -d app   # replace container (DB volume preserved)
 - Generate: `npm run migration:generate`
 - Run: `npm run migration:run`
 - Revert: `npm run migration:revert`
-- Migration files live in `src/migrations/` and must be committed.
+- Migration files live in `src/database/migrations/` and must be committed.
 
 ---
 
@@ -135,7 +135,7 @@ docker compose up -d app   # replace container (DB volume preserved)
 
 ## 커밋 포함/제외 대상
 - **절대 커밋 금지**: `.env`, `.build/`, `node_modules/` — 빌드/배포/테스트 산출물은 전부 `.build/` 하위에 둔다
-- **반드시 커밋**: `src/`, `views/`, `public/`, `migrations/`, 설정 파일
+- **반드시 커밋**: `src/`, `frontend/`, 필요한 설정 파일, migration 파일
 - **변경 시 함께 커밋**: `package.json`, `package-lock.json`, `tsconfig.json`
 
 ## 빌드 및 배포 흐름
@@ -143,7 +143,7 @@ docker compose up -d app   # replace container (DB volume preserved)
 ```
 [로컬]
 npm run build          # nest build → .build/dist/
-npm run deploy:prepare # .build/dist/ + views/ + public/ → .build/deploy/
+npm run deploy:prepare # .build/dist/ + frontend/dist/ → .build/deploy/
 
 [Docker]
 docker compose build app   # Dockerfile 2단계 빌드
@@ -153,10 +153,10 @@ docker compose up -d app   # 컨테이너 교체 기동 (DB 볼륨 유지)
 ### Dockerfile 구조
 - **Stage 1 (builder)**: `npm install` → `nest build` → `deploy:prepare`
 - **Stage 2 (runner)**: `.build/deploy/` 만 복사 → `npm ci --omit=dev`
-- 런타임 필수 산출물 (`.build/deploy/`): `dist/`, `views/`, `public/`, `package.json`, `package-lock.json` (패킷 내부 `start:prod` 는 `node dist/main` 으로 재작성됨)
+- 런타임 필수 산출물 (`.build/deploy/`): `dist/`, `frontend/dist/`, `package.json`, `package-lock.json`.
 
 ### Docker Compose 구성
-- `workflow-app` — NestJS 앱, 포트 `3000→3000`
+- `workflow-app` — NestJS 앱, Docker 네트워크 내부 포트 `3000`
 - `workflow-db` — PostgreSQL 16, 외부 포트 미노출 (내부 통신 전용)
 - DB 데이터는 볼륨 `workflow-db-data` 로 영속 보관
 - 앱은 DB 헬스체크 통과 후 기동 (`depends_on: service_healthy`)
@@ -166,4 +166,4 @@ docker compose up -d app   # 컨테이너 교체 기동 (DB 볼륨 유지)
 - 생성: `npm run migration:generate`
 - 실행: `npm run migration:run`
 - 롤백: `npm run migration:revert`
-- 마이그레이션 파일은 `src/migrations/` 에 위치하며 반드시 커밋.
+- 마이그레이션 파일은 `src/database/migrations/` 에 위치하며 반드시 커밋.

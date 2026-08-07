@@ -21,9 +21,9 @@ Security and reliability rules for generated or edited code in this repo. Apply 
 - Shared event binders must be idempotent.
   - Do not add duplicate `document` or `window` listeners on repeated initialization.
   - Use a bound flag, named handler removal, or one-time page initialization.
-- Mutating requests (`POST`, `PUT`, `PATCH`, `DELETE`) must follow the app CSRF convention: `X-CSRF-Token` header or form `_csrf`.
+- Mutating requests (`POST`, `PUT`, `PATCH`, `DELETE`) must follow the app CSRF convention: `X-CSRF-Token` header.
 - DOM helpers must tolerate missing elements unless the caller has already proven the element exists.
-- Do not put behavior back into `.hbs` files. No inline scripts and no inline event handlers.
+- New frontend behavior belongs in Vue components and shared client modules.
 
 ## Backend TypeScript / NestJS
 
@@ -32,7 +32,7 @@ Security and reliability rules for generated or edited code in this repo. Apply 
 - Throw i18n keys from service and lower layers, not localized strings.
 - Do not return secrets, password hashes, refresh tokens, CSRF tokens, or internal exception details in API responses.
 - Passwords must always be hashed with bcrypt before persistence.
-- Authorization checks belong on every protected API and SSR admin route. Do not rely on hidden UI controls as authorization.
+- Authorization checks belong on every protected API. Vue route guards and hidden UI controls are not authorization.
 
 ## Database / Persistence
 
@@ -58,7 +58,7 @@ Security and reliability rules for generated or edited code in this repo. Apply 
 Before accepting generated code, scan the changed files for:
 
 - `innerHTML`, `outerHTML`, `insertAdjacentHTML`
-- inline `onclick`, `onchange`, or `<script>` blocks in templates
+- `v-html` or inline raw HTML without a documented sanitizer/safety boundary
 - dynamic HTML strings containing unescaped IDs, names, messages, URLs, or attributes
 - repeated `document.addEventListener` / `window.addEventListener` in reusable initializers
 - `event.target.classList.contains(...)` where `closest()` is required
@@ -95,9 +95,9 @@ If any item is intentionally present, document the reason and the safety boundar
 - 공통 이벤트 바인더는 idempotent해야 한다.
   - 반복 초기화 때 `document`/`window` 리스너가 중복 등록되면 안 된다.
   - bound flag, named handler 제거, 또는 페이지 1회 초기화를 사용한다.
-- 변경 요청(`POST`, `PUT`, `PATCH`, `DELETE`)은 앱 CSRF 규칙을 따른다: `X-CSRF-Token` 헤더 또는 폼 `_csrf`.
+- 변경 요청(`POST`, `PUT`, `PATCH`, `DELETE`)은 앱 CSRF 규칙을 따른다: `X-CSRF-Token` 헤더.
 - DOM helper는 호출자가 존재를 이미 증명한 경우가 아니면 누락된 element를 견뎌야 한다.
-- 동작을 `.hbs` 템플릿으로 되돌리지 않는다. 인라인 스크립트와 인라인 이벤트 핸들러 금지.
+- 신규 프론트 동작은 Vue component와 공통 client module에 둔다.
 
 ## 백엔드 TypeScript / NestJS
 
@@ -106,7 +106,7 @@ If any item is intentionally present, document the reason and the safety boundar
 - Service 이하 계층은 지역화 문자열이 아니라 i18n key를 던진다.
 - API 응답에 secret, password hash, refresh token, CSRF token, 내부 예외 상세를 포함하지 않는다.
 - 비밀번호는 저장 전 항상 bcrypt로 해싱한다.
-- 보호된 API와 SSR admin route에는 권한 검사를 둔다. 숨겨진 UI 컨트롤을 권한으로 간주하지 않는다.
+- 보호된 API에는 권한 검사를 둔다. Vue route guard와 숨겨진 UI 컨트롤을 권한으로 간주하지 않는다.
 
 ## DB / 영속성
 
@@ -132,7 +132,7 @@ If any item is intentionally present, document the reason and the safety boundar
 생성 코드를 수용하기 전 변경 파일에서 다음을 확인한다.
 
 - `innerHTML`, `outerHTML`, `insertAdjacentHTML`
-- 템플릿의 인라인 `onclick`, `onchange`, `<script>` 블록
+- sanitizer 또는 안전 경계 문서화 없이 사용한 `v-html` 또는 raw HTML
 - escape되지 않은 ID, 이름, 메시지, URL, attribute가 들어간 동적 HTML 문자열
 - 재사용 initializer 안의 반복 `document.addEventListener` / `window.addEventListener`
 - `closest()`가 필요한 곳의 `event.target.classList.contains(...)`

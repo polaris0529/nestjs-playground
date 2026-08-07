@@ -20,34 +20,34 @@ import { Roles } from '../../shared/decorators/roles.decorator';
 
 @ApiTags('공통 태스크')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('calendar/common-tasks')
+@Controller('calendar')
 export class CommonTaskController {
   constructor(private readonly commonTaskService: CommonTaskService) {}
 
-  @Get()
+  @Get('common-tasks')
   findByRange(@Query() query: CalendarRangeQueryDto) {
     return this.commonTaskService.findByRange(query);
   }
 
-  @Get(':id')
+  @Get('common-tasks/:id')
   findOne(@Param('id') id: string) {
     return this.commonTaskService.findOne(id);
   }
 
   @Roles('ADMIN')
-  @Post()
+  @Post('common-tasks')
   create(@Body() dto: CreateCommonTaskDto) {
     return this.commonTaskService.create(dto);
   }
 
   @Roles('ADMIN')
-  @Patch(':id')
+  @Patch('common-tasks/:id')
   update(@Param('id') id: string, @Body() dto: UpdateCommonTaskDto) {
     return this.commonTaskService.update(id, dto);
   }
 
   @Roles('ADMIN')
-  @Delete(':id')
+  @Delete('common-tasks/:id')
   remove(@Param('id') id: string) {
     return this.commonTaskService.remove(id);
   }

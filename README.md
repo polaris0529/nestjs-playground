@@ -1,14 +1,14 @@
 # WorkFlow — NestJS 관리자 포털
 
-NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/계정 관리, SSR(hbs) 화면과 Docker 배포를 포함한다.
+NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/계정 관리, Vue.js 프론트엔드와 Docker 배포를 포함한다.
 
 ## 기술 스택
 
 - **런타임/프레임워크**: Node.js 20, NestJS 11
 - **DB/ORM**: PostgreSQL 16, TypeORM (마이그레이션 기반, `synchronize: false`)
 - **인증**: Passport JWT (access + refresh, httpOnly 쿠키), bcrypt 해싱, Double-submit CSRF
-- **뷰**: Handlebars(hbs) SSR + Bootstrap 5 + DataTables
-- **모니터링**: prom-client + @willsoto/nestjs-prometheus — `/metrics` Prometheus pull exporter
+- **프론트엔드**: Vue.js + Vue Router + Vite
+- **모니터링**: prom-client + @willsoto/nestjs-prometheus — `/api/metrics` Prometheus pull exporter
 - **배포**: Docker / docker-compose, Nginx Proxy Manager 뒤단
 
 ## 주요 기능
@@ -17,35 +17,33 @@ NestJS + PostgreSQL 기반의 관리자 포털. JWT 인증, 공통코드/메뉴/
 - **공통코드 관리**: 그룹/코드 CRUD (SELECTBOX 기반 입력, 검증)
 - **메뉴 관리**: 트리 구조(부모-자식) CRUD, 사이드바 동적 렌더링(접이식 폴더)
 - **계정 관리**: 생성·수정·역할 변경·비활성화, 본인 비밀번호 변경
-- **메인 일정보드**: 메인 `/` 는 공통 일정보드(공통 캘린더). 공휴일·공통 태스크를 누구나 조회(무인증 `GET /calendar/common-events`)
-- **대시보드**: `/dashboard`(로그인) — 통계 요약(계정/메뉴/코드)
-- **소개 페이지**: `/about`(공개) — 포트폴리오
-- **캘린더**: FullCalendar(CDN) 월간 뷰, 공통 캘린더 기준일 + 개인/공통 태스크 관리(등록·수정·삭제, soft-delete). `/calendar`(로그인), `/admin/calendar`(ADMIN: 공휴일·공통 태스크 편집). 공통 태스크 CRUD는 ADMIN 전용, 조회는 공개. 한국 시간(`Asia/Seoul`) 기준
+- **메인 일정보드**: 메인 `/` 는 공통 일정보드(공통 캘린더). 공휴일·공통 태스크를 누구나 조회(무인증 `GET /api/calendar/common-events`)
+- **대시보드**: `/dashboard`(로그인) — `GET /api/dashboard/summary` 기반 통계 요약(계정/메뉴/코드)
+- **캘린더**: Vue 월간 뷰, 공통 캘린더 기준일 + 개인/공통 태스크 관리(등록·수정·삭제, soft-delete). `/calendar`(로그인). 공통 태스크 CRUD는 ADMIN 전용, 조회는 공개. 한국 시간(`Asia/Seoul`) 기준
 - **다국어(i18n)**: `Accept-Language` 기반, 예외 메시지를 전역 필터에서 키→요청 언어로 번역 (ko/en)
-- **메트릭**: `GET /metrics` — Prometheus pull 방식, Node.js 기본 메트릭(CPU·메모리·GC·이벤트루프) 수집, `app="workflow"` 레이블 포함
+- **메트릭**: `GET /api/metrics` — Prometheus pull 방식, Node.js 기본 메트릭(CPU·메모리·GC·이벤트루프) 수집, `app="workflow"` 레이블 포함
 
 ## 프로젝트 구조 (레이어드)
 
 ```
 src/
 ├── modules/                   # 도메인 기능 모듈
-│   └── <feature>/             # auth, account, common-code, menu, admin, calendar
+│   └── <feature>/             # auth, account, common-code, menu, calendar
 │       ├── *.controller.ts    # Presentation — HTTP 라우팅
 │       ├── *.service.ts       # Application — 비즈니스 흐름
 │       ├── *.repository.ts    # Infrastructure — TypeORM 캡슐화
 │       ├── dto/ , entities/
 │       └── *.module.ts
 ├── shared/                    # 횡단 관심사
-│   ├── guards/ (JwtAuth, Roles, AdminPage)
+│   ├── guards/ (JwtAuth, Roles)
 │   ├── interceptors/ (Logging)   filters/ (HttpError)
-│   ├── middleware/ (Logger, Auth, Csrf, MenuNav)
+│   ├── middleware/ (Logger, Csrf)
 │   ├── decorators/ (Roles)   exceptions/   types/
 ├── config/                    # app.config / typeorm.config / swagger.config
 ├── database/                  # data-source.ts + migrations/ (스키마·시드)
 ├── i18n/                      # 번역 리소스 (ko, en)
 ├── main.ts  app.module.ts  app.controller.ts  app.service.ts  # 부트스트랩
-views/        # hbs 템플릿 (partials/ 공통 조각, admin/ 관리 화면)
-public/       # 정적 자산 (css, js)
+frontend/     # Vue.js 프론트엔드 소스
 ```
 
 의존 방향: **Controller → Service → Repository** (계층 건너뛰기 금지). 세부 규칙은 `.claude/rules/` 참조.
@@ -53,7 +51,7 @@ public/       # 정적 자산 (css, js)
 ## 요구사항
 
 - Node.js 20 (LTS), npm
-- Docker / docker compose (배포·로컬 DB)
+- Docker / docker compose (배포·로컬 컨테이너 실행)
 
 ## 환경변수 (`.env`)
 
@@ -72,6 +70,8 @@ JWT_SECRET=<access 서명 시크릿>
 JWT_REFRESH_SECRET=<refresh 서명 시크릿>
 JWT_ACCESS_EXPIRES_IN=1800      # 초 (30분)
 JWT_REFRESH_EXPIRES_IN=604800   # 초 (7일)
+COOKIE_ACCESS_NAME=access_token
+COOKIE_REFRESH_NAME=refresh_token
 ```
 
 ## 로컬 실행
@@ -81,12 +81,12 @@ JWT_REFRESH_EXPIRES_IN=604800   # 초 (7일)
 npm install
 
 # 2) DB + 앱 (docker)
-docker compose up -d --build      # base + docker-compose.override.yml(로컬 포트) 자동 병합
-
-# 앱: http://localhost:3000  /  DB 툴: localhost:5433
+docker compose up -d --build
 ```
 
-> `docker-compose.yml`(base)은 DB 포트 5432를 노출한다(원격 서버 로컬 접속용). 앱 포트(3000)는 gitignore 대상인 `docker-compose.override.yml` 에서만 노출된다. 로컬에서는 override가 DB 5433도 추가 노출한다.
+> 기본 `docker-compose.yml` 은 서버 배포 기준이다. 앱은 `workflow-app:3000` 으로 Docker 네트워크 내부에서 접근하고, DB 는 host port를 노출하지 않는다. 로컬 브라우저나 DB 툴 접속이 필요할 때만 gitignore 대상인 `docker-compose.override.yml` 에 localhost 전용 포트를 별도로 연다.
+
+> Vue 개발 서버는 `npm run start:frontend` 로 실행한다. 기본 포트는 `5173` 이며 API 요청은 Nest 서버(`3000`)로 proxy 된다.
 
 소스만 watch 로 띄우려면(별도 DB 필요):
 
@@ -104,7 +104,7 @@ npm run migration:run         # 적용
 npm run migration:revert      # 롤백
 ```
 
-> 로컬에서 직접 실행 시 `DATABASE_URL` 의 호스트가 `db` 가 아니라 `localhost:5433` 이어야 한다.
+> 로컬에서 직접 실행 시에는 별도 DB가 필요하다. `docker-compose.override.yml` 로 DB를 localhost에 열었다면 `DATABASE_URL` 의 호스트를 `localhost:<local-db-port>` 로 둔다.
 
 ## 기본 계정
 
@@ -114,8 +114,8 @@ npm run migration:revert      # 롤백
 ## 인증/권한 요약
 
 - 로그인 시 access/refresh JWT 를 httpOnly 쿠키로 발급, access 만료 시 자동 갱신
-- 변경 요청은 CSRF 토큰(`X-CSRF-Token` 헤더 또는 `_csrf` 폼 필드) 필요
-- 관리자 API: `ADMIN` 전용(401/403), 관리자 페이지(`/admin/*`): 미인증→`/login`, 비-ADMIN→`/`
+- 변경 요청은 CSRF 토큰(`X-CSRF-Token` 헤더) 필요
+- 관리자 API: `ADMIN` 전용(401/403), 관리자 화면(`/admin`): 프론트 라우트 가드는 UX 보조이며 백엔드 권한 검사를 대체하지 않는다.
 
 ## 테스트 / 린트
 
@@ -157,18 +157,18 @@ docker compose up -d --build app   # entrypoint 가 마이그레이션 자동 �
    (NestJS)           (Spring)      (HTTPS, 내부전용) (NPM 관리 콘솔)
         │                   │
         ▼                   ▼
- workflow-db:5432    spring-app-db:5432   ← DB 는 nginx-net 미연결, 호스트 5432 노출(로컬 접속용)
+ workflow-db:5432    spring-app-db:5432   ← DB 는 internal net 전용, host port 미노출
  (internal net)      (internal net)
 ```
 
 ### 프록시 호스트 매핑 (NPM)
 
-| 전달 대상(컨테이너) | 내부 포트 | Scheme | 접근 정책 |
-|---|---|---|---|
-| `workflow-app` | `3000` | http | 공개 |
-| `spring-app` | `8080` | http | 공개 |
-| `portainer` | `9443` | **https** | **internal-only** |
-| `nginx-manager` | `81` | http | 공개 |
+| 전달 대상(컨테이너) | 내부 포트 | Scheme    | 접근 정책         |
+| ------------------- | --------- | --------- | ----------------- |
+| `workflow-app`      | `3000`    | http      | 공개              |
+| `spring-app`        | `8080`    | http      | 공개              |
+| `portainer`         | `9443`    | **https** | **internal-only** |
+| `nginx-manager`     | `81`      | http      | 공개              |
 
 > 전달 대상은 호스트:포트가 아니라 **도커 내부 DNS(컨테이너명)** 를 사용한다. 모든 대상 컨테이너는 `nginx-net` 에 연결돼 있어야 한다(`docker network connect nginx-net <container>`).
 
@@ -184,11 +184,13 @@ docker compose up -d --build app   # entrypoint 가 마이그레이션 자동 �
 
 ## 규칙 문서
 
-프로젝트 코딩/서비스/UI/배포 규칙은 `.claude/rules/` 에 있으며 `CLAUDE.md` 에서 import 한다.
+프로젝트 코딩/서비스/UI/배포 규칙은 `.claude/rules/` 에 있으며 `AGENTS.md` 와 `CLAUDE.md` 에서 import 한다.
 
+- `coding-design.md` — 공통 코딩·디자인 규칙
+- `operation-process.md` — 응답 언어 / Docker Compose / 규칙 파일 관리
 - `app-coding.md` — 레이어드 아키텍처 / REST / DTO·엔티티 / 마이그레이션 / i18n
 - `app-service.md` — 모듈 구성 / 인증·인가 / Swagger
 - `safe-coding.md` — 보안·안정성 코딩 규칙 / 생성 코드 리뷰 체크리스트
-- `ui-design.md` — hbs 템플릿 / 테마 컬러 / 동적 메뉴 / 관리 UI
+- `ui-design.md` — Vue 프론트엔드 / 테마 컬러 / 동적 메뉴 / 관리 UI
 - `git-deploy.md` — git 운영 / 커밋 규칙 / 배포 흐름
 - `skills-reference.md` — 프로젝트 관련 설치 스킬 참조

@@ -35,16 +35,17 @@ if (fs.existsSync(path.join(root, 'package-lock.json'))) {
   );
 }
 
-// 런타임에 필요한 정적 자산 / hbs 뷰 템플릿 포함
-for (const dir of ['views', 'public']) {
-  const src = path.join(root, dir);
-  if (fs.existsSync(src)) {
-    fs.cpSync(src, path.join(deployDir, dir), { recursive: true });
-  }
+const frontendDist = path.join(root, 'frontend', 'dist');
+if (!fs.existsSync(frontendDist)) {
+  console.error('frontend/dist 없음. 먼저 npm run build 를 실행하세요.');
+  process.exit(1);
 }
+fs.cpSync(frontendDist, path.join(deployDir, 'frontend', 'dist'), {
+  recursive: true,
+});
 
 console.log(
-  '배포 패킷 준비됨: .build/deploy/  (dist + views + public + package.json)',
+  '배포 패킷 준비됨: .build/deploy/  (dist + frontend/dist + package.json)',
 );
 console.log('');
 console.log('배포 서버에서:');

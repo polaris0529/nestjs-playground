@@ -49,7 +49,7 @@ Each module is responsible for its own initialization (env loading, config, midd
 
 ## DB / Migration
 - `synchronize: false` is fixed — all schema changes must go through migrations.
-- Migration files live in `src/migrations/`.
+- Migration files live in `src/database/migrations/`.
 - Generate: `npm run migration:generate`, Run: `npm run migration:run`.
 
 ## REST API Design
@@ -143,7 +143,7 @@ Use `nestjs-i18n` when multilingual support is needed. The core principle: **lay
 
 ## DB / 마이그레이션
 - `synchronize: false` 고정 — 스키마 변경은 반드시 마이그레이션으로 처리.
-- 마이그레이션 파일 위치: `src/migrations/`.
+- 마이그레이션 파일 위치: `src/database/migrations/`.
 - 생성: `npm run migration:generate`, 실행: `npm run migration:run`.
 
 ## REST API 설계

@@ -20,11 +20,11 @@ import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @ApiTags('개인 태스크')
 @UseGuards(JwtAuthGuard)
-@Controller('calendar/personal-tasks')
+@Controller('calendar')
 export class PersonalTaskController {
   constructor(private readonly personalTaskService: PersonalTaskService) {}
 
-  @Get()
+  @Get('personal-tasks')
   findByRange(
     @Req() req: AuthenticatedRequest,
     @Query() query: CalendarRangeQueryDto,
@@ -32,17 +32,17 @@ export class PersonalTaskController {
     return this.personalTaskService.findByRange(req.user.accountId, query);
   }
 
-  @Get(':id')
+  @Get('personal-tasks/:id')
   findOne(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.personalTaskService.findOne(req.user.accountId, id);
   }
 
-  @Post()
+  @Post('personal-tasks')
   create(@Req() req: AuthenticatedRequest, @Body() dto: CreatePersonalTaskDto) {
     return this.personalTaskService.create(req.user.accountId, dto);
   }
 
-  @Patch(':id')
+  @Patch('personal-tasks/:id')
   update(
     @Req() req: AuthenticatedRequest,
     @Param('id') id: string,
@@ -51,7 +51,7 @@ export class PersonalTaskController {
     return this.personalTaskService.update(req.user.accountId, id, dto);
   }
 
-  @Delete(':id')
+  @Delete('personal-tasks/:id')
   remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.personalTaskService.remove(req.user.accountId, id);
   }

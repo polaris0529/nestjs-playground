@@ -1,5 +1,6 @@
 # compiled output — 빌드/배포/테스트 산출물은 전부 .build/ 하위로 모은다
 /.build
+/frontend/dist
 /node_modules
 /build
 *.tsbuildinfo

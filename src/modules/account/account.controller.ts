@@ -22,7 +22,7 @@ import { AuthUser } from '../../shared/types/auth.types';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('계정')
-@Controller('accounts')
+@Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
@@ -33,32 +33,32 @@ export class AccountController {
     return this.accountService.changePassword(user.accountId, dto);
   }
 
-  @Get()
+  @Get('accounts')
   @Roles('ADMIN')
   findAll() {
     return this.accountService.findAll();
   }
 
-  @Get(':id')
+  @Get('accounts/:id')
   @Roles('ADMIN')
   findOne(@Param('id') id: string) {
     return this.accountService.findOne(+id);
   }
 
-  @Post()
+  @Post('accounts')
   @Roles('ADMIN')
   create(@Body() dto: CreateAccountDto) {
     return this.accountService.create(dto);
   }
 
-  @Patch(':id')
+  @Patch('accounts/:id')
   @Roles('ADMIN')
   update(@Param('id') id: string, @Body() dto: UpdateAccountDto) {
     return this.accountService.update(+id, dto);
   }
 
   // 비활성화 (소프트 삭제)
-  @Delete(':id')
+  @Delete('accounts/:id')
   @Roles('ADMIN')
   remove(@Param('id') id: string) {
     return this.accountService.deactivate(+id);

@@ -1,6 +1,6 @@
 # Skills Reference (Project-Relevant)
 
-Curated list of installed skills relevant to **this** repo (NestJS + TypeORM + PostgreSQL + Handlebars SSR + Docker). See root `CLAUDE.md` for global rules.
+Curated list of installed skills relevant to **this** repo (NestJS + TypeORM + PostgreSQL + Vue.js + Docker). See root `CLAUDE.md` for global rules.
 
 > Advisory only. User instructions and the `@`-imported rule files (`app-coding`, `app-service`, `ui-design`, `git-deploy`, `safe-coding`) always take precedence over any skill. Skill names are namespaced (`plugin:skill`); invoke with the full name.
 
@@ -44,16 +44,16 @@ Curated list of installed skills relevant to **this** repo (NestJS + TypeORM + P
 | `superpowers:systematic-debugging` | Any bug/test failure before proposing a fix |
 | `superpowers:verification-before-completion` | Evidence before claiming done / before commit |
 
-## UI (SSR only)
+## UI (Vue)
 
 | Skill | Use for |
 |---|---|
-| `frontend-design:frontend-design` | Visual direction for `views/` (hbs) + `public/css` — see `ui-design.md` |
+| `frontend-design:frontend-design` | Visual direction for Vue screens and shared UI components — see `ui-design.md` |
 
 ## Not Currently Applicable
 
 - `mongodb:*` — repo uses PostgreSQL, not MongoDB. Reference only if MongoDB is introduced.
-- `ecc:react-*`, `ecc:vue-*`, `ecc:nextjs-*` — repo SSR is Handlebars + vanilla JS, not a SPA framework.
+- `ecc:react-*`, `ecc:nextjs-*` — repo target frontend is Vue.js, not React/Next.js.
 - `ecc:prisma-patterns`, `ecc:jpa-patterns` — repo ORM is TypeORM, not Prisma/JPA.
 - `ecc:springboot-*`, language packs for Go/Rust/Kotlin/etc. — out of stack.
 
@@ -61,7 +61,7 @@ Curated list of installed skills relevant to **this** repo (NestJS + TypeORM + P
 
 # 스킬 참조 (프로젝트 관련)
 
-이 레포(NestJS + TypeORM + PostgreSQL + Handlebars SSR + Docker)에 해당하는 설치 스킬 정리. 전체 공통 룰은 루트 `CLAUDE.md` 참조.
+이 레포(NestJS + TypeORM + PostgreSQL + Vue.js + Docker)에 해당하는 설치 스킬 정리. 전체 공통 룰은 루트 `CLAUDE.md` 참조.
 
 > 참고용이다. 사용자 지시와 `@` import 룰 파일(`app-coding`, `app-service`, `ui-design`, `git-deploy`, `safe-coding`)이 어떤 스킬보다 우선한다. 스킬명은 네임스페이스(`plugin:skill`)이며 전체 이름으로 호출한다.
 
@@ -105,15 +105,15 @@ Curated list of installed skills relevant to **this** repo (NestJS + TypeORM + P
 | `superpowers:systematic-debugging` | 버그/테스트 실패 시 수정 제안 전에 |
 | `superpowers:verification-before-completion` | 완료 주장/커밋 전에 증거 확보 |
 
-## UI (SSR 한정)
+## UI (Vue)
 
 | 스킬 | 용도 |
 |---|---|
-| `frontend-design:frontend-design` | `views/`(hbs) + `public/css` 시각 방향(`ui-design.md` 참조) |
+| `frontend-design:frontend-design` | Vue 화면과 공통 UI component 시각 방향(`ui-design.md` 참조) |
 
 ## 현재 비해당
 
 - `mongodb:*` — 이 레포는 PostgreSQL 사용. MongoDB 도입 시에만 참조.
-- `ecc:react-*`, `ecc:vue-*`, `ecc:nextjs-*` — 이 레포 SSR 은 Handlebars + 바닐라 JS, SPA 프레임워크 아님.
+- `ecc:react-*`, `ecc:nextjs-*` — 이 레포 target frontend는 Vue.js이며 React/Next.js가 아님.
 - `ecc:prisma-patterns`, `ecc:jpa-patterns` — 이 레포 ORM 은 TypeORM(Prisma/JPA 아님).
 - `ecc:springboot-*`, Go/Rust/Kotlin 등 언어팩 — 스택 외.

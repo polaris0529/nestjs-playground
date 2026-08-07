@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CalendarController } from './calendar.controller';
-import { CalendarPageController } from './calendar-page.controller';
 import { CommonTaskController } from './common-task.controller';
 import { PersonalTaskController } from './personal-task.controller';
 import { CalendarRepository } from './calendar.repository';
@@ -17,7 +16,6 @@ import { PersonalTask } from './entities/personal-task.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([CalendarDay, CommonTask, PersonalTask])],
   controllers: [
-    CalendarPageController,
     CalendarController,
     CommonTaskController,
     PersonalTaskController,

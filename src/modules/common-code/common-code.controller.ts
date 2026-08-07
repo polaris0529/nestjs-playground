@@ -21,13 +21,13 @@ import { Roles } from '../../shared/decorators/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
 @ApiTags('공통코드')
-@Controller('common-codes')
+@Controller('common-code')
 export class CommonCodeController {
   constructor(private readonly commonCodeService: CommonCodeService) {}
 
   // 목록 조회: groupCode 가 있으면 해당 그룹의 사용중 코드(SELECTBOX용),
   // 없으면 전체 코드(관리 목록용)를 반환한다.
-  @Get()
+  @Get('codes')
   findAll(@Query('groupCode') groupCode?: string) {
     return groupCode
       ? this.commonCodeService.findCodesByGroupCode(groupCode)
@@ -35,25 +35,25 @@ export class CommonCodeController {
   }
 
   // 코드 단건 조회
-  @Get(':id')
+  @Get('codes/:id')
   findOne(@Param('id') id: string) {
     return this.commonCodeService.findCode(+id);
   }
 
   // 코드 생성
-  @Post()
+  @Post('codes')
   create(@Body() dto: CreateCommonCodeDto) {
     return this.commonCodeService.createCode(dto);
   }
 
   // 코드 수정
-  @Patch(':id')
+  @Patch('codes/:id')
   update(@Param('id') id: string, @Body() dto: UpdateCommonCodeDto) {
     return this.commonCodeService.updateCode(+id, dto);
   }
 
   // 코드 삭제
-  @Delete(':id')
+  @Delete('codes/:id')
   remove(@Param('id') id: string) {
     return this.commonCodeService.removeCode(+id);
   }

@@ -71,7 +71,7 @@ export class AuthController {
     return { loginId: tokens.loginId, roles: tokens.roles };
   }
 
-  // 로그아웃 → 쿠키 제거 후 로그인 페이지로 이동 (헤더 폼 POST)
+  // 로그아웃 → 쿠키 제거 후 Vue 로그인 라우트로 이동
   @Post('logout')
   logout(@Res() res: Response) {
     res.clearCookie(this.accessCookieName);
