@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { AuthService, AuthTokens } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
@@ -19,33 +19,42 @@ import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 export class AuthController {
   private readonly accessCookieName: string;
   private readonly refreshCookieName: string;
+  private readonly accessCookieMaxAgeMs: number;
+  private readonly refreshCookieMaxAgeMs: number;
+  private readonly secureCookie: boolean;
 
   constructor(
     private readonly authService: AuthService,
-    private readonly config: ConfigService,
+    config: ConfigService,
   ) {
-    this.accessCookieName =
-      config.get<string>('cookie.accessName') ?? 'access_token';
-    this.refreshCookieName =
-      config.get<string>('cookie.refreshName') ?? 'refresh_token';
+    this.accessCookieName = config.getOrThrow<string>('cookie.accessName');
+    this.refreshCookieName = config.getOrThrow<string>('cookie.refreshName');
+    this.accessCookieMaxAgeMs =
+      config.getOrThrow<number>('jwt.accessExpiresIn') * 1000;
+    this.refreshCookieMaxAgeMs =
+      config.getOrThrow<number>('jwt.refreshExpiresIn') * 1000;
+    this.secureCookie = config.getOrThrow<string>('env') === 'production';
   }
 
   // access/refresh 토큰을 httpOnly 쿠키로 저장
   private setAuthCookies(res: Response, tokens: AuthTokens): void {
-    const secure = this.config.get<string>('env') === 'production';
     res.cookie(this.accessCookieName, tokens.accessToken, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure,
-      maxAge: (this.config.get<number>('jwt.accessExpiresIn') ?? 1800) * 1000,
+      ...this.authCookieOptions(),
+      maxAge: this.accessCookieMaxAgeMs,
     });
     res.cookie(this.refreshCookieName, tokens.refreshToken, {
+      ...this.authCookieOptions(),
+      maxAge: this.refreshCookieMaxAgeMs,
+    });
+  }
+
+  private authCookieOptions(): CookieOptions {
+    return {
       httpOnly: true,
       sameSite: 'lax',
-      secure,
-      maxAge:
-        (this.config.get<number>('jwt.refreshExpiresIn') ?? 604800) * 1000,
-    });
+      secure: this.secureCookie,
+      path: '/',
+    };
   }
 
   @Post('login')
@@ -74,8 +83,8 @@ export class AuthController {
   // 로그아웃 → 쿠키 제거 후 Vue 로그인 라우트로 이동
   @Post('logout')
   logout(@Res() res: Response) {
-    res.clearCookie(this.accessCookieName);
-    res.clearCookie(this.refreshCookieName);
+    res.clearCookie(this.accessCookieName, this.authCookieOptions());
+    res.clearCookie(this.refreshCookieName, this.authCookieOptions());
     res.redirect('/login');
   }
 

@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from './views/HomeView.vue';
-import LoginView from './views/LoginView.vue';
-import DashboardView from './views/DashboardView.vue';
-import AdminView from './views/AdminView.vue';
-import CalendarView from './views/CalendarView.vue';
+import AdminView from './domains/admin/AdminView.vue';
+import LoginView from './domains/auth/LoginView.vue';
+import CalendarView from './domains/calendar/CalendarView.vue';
+import HomeView from './domains/calendar/HomeView.vue';
+import DashboardView from './domains/dashboard/DashboardView.vue';
 
 export const router = createRouter({
   history: createWebHistory(),

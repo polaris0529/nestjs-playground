@@ -18,17 +18,25 @@
 - Swagger/OpenAPI documentation
 - Prometheus metrics via `@willsoto/nestjs-prometheus`
 
+## Configuration
+
+- Runtime configuration is loaded through NestJS `ConfigModule` and `ConfigService`.
+- Required numeric environment values must be parsed as `number` in `src/config/app.config.ts`.
+- Required numeric config reads must use `ConfigService#getOrThrow<number>()`; do not add default fallbacks where a missing value should fail startup.
+- Missing or non-numeric required number env values must throw before the app accepts requests.
+
 ## Frontend
 
-- Vue.js
+- Vue 3
 - Vue Router
+- Pinia
 - Vite
 - Vue single-file components under `frontend/`
 
 ## Frontend Migration Note
 
 The frontend has been changed from server-rendered Handlebars (`views/`) and
-static assets (`public/`) to a Vue.js application under `frontend/`.
+static assets (`public/`) to a Vue 3 application under `frontend/`.
 
 - Product screens should be implemented in Vue, not new hbs templates.
 - API calls should use `/api/<domain>/<request>` paths.

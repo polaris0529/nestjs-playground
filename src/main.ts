@@ -70,7 +70,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
 
-  const logLevel = config.get<string>('logLevel', 'log');
+  const logLevel = config.getOrThrow<string>('logLevel');
   app.useLogger(resolveLogLevels(logLevel));
 
   app.use(cookieParser());
@@ -83,14 +83,20 @@ async function bootstrap() {
 
   // 전역 검증 파이프: DTO 의 class-validator 규칙을 모든 요청에 강제 적용
   // whitelist: DTO 에 없는 속성 제거, transform: 타입 자동 변환
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
   app.useGlobalFilters(new HttpErrorFilter(app.get(I18nService)));
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   setupSwagger(app);
   registerVueFallback(app, frontendDistPath);
 
-  const port = config.get<number>('port', 3000);
+  const port = config.getOrThrow<number>('port');
   await app.listen(port, '0.0.0.0');
 }
 void bootstrap();

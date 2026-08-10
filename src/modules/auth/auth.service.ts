@@ -46,7 +46,7 @@ export class AuthService {
     let payload: JwtPayload;
     try {
       payload = this.jwtService.verify<JwtPayload>(refreshToken, {
-        secret: this.config.get<string>('jwt.refreshSecret'),
+        secret: this.config.getOrThrow<string>('jwt.refreshSecret'),
       });
     } catch {
       throw new UnauthorizedException('auth.errors.refresh_invalid');
@@ -68,12 +68,12 @@ export class AuthService {
   ): Promise<AuthTokens> {
     const payload: JwtPayload = { sub, loginId, roles };
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: this.config.get<string>('jwt.secret'),
-      expiresIn: this.config.get<number>('jwt.accessExpiresIn'),
+      secret: this.config.getOrThrow<string>('jwt.secret'),
+      expiresIn: this.config.getOrThrow<number>('jwt.accessExpiresIn'),
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: this.config.get<string>('jwt.refreshSecret'),
-      expiresIn: this.config.get<number>('jwt.refreshExpiresIn'),
+      secret: this.config.getOrThrow<string>('jwt.refreshSecret'),
+      expiresIn: this.config.getOrThrow<number>('jwt.refreshExpiresIn'),
     });
     return { accessToken, refreshToken, loginId, roles };
   }

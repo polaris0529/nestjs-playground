@@ -10,8 +10,7 @@ import { JwtPayload } from '../../../shared/types/auth.types';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
     // 쿠키명을 config에서 읽어 클로저로 캡처한다. super() 내부라 this 접근 불가.
-    const accessCookieName =
-      config.get<string>('cookie.accessName') ?? 'access_token';
+    const accessCookieName = config.getOrThrow<string>('cookie.accessName');
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) =>
@@ -19,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
-      secretOrKey: config.get<string>('jwt.secret') ?? 'change-me-in-env',
+      secretOrKey: config.getOrThrow<string>('jwt.secret'),
     });
   }
 

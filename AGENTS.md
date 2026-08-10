@@ -58,13 +58,10 @@ For multi-step tasks, state a brief plan:
 Load the relevant rule files before work in their scope.
 
 @.claude/rules/coding-design.md
-@.claude/rules/operation-process.md
-@.claude/rules/app-coding.md
-@.claude/rules/app-service.md
 @.claude/rules/safe-coding.md
-@.claude/rules/ui-design.md
 @.claude/rules/git-deploy.md
-@.claude/rules/skills-reference.md
+@.claude/rules/skill.md
+@.claude/rules/vue-skill.md
 
 ## Project Reference Files
 

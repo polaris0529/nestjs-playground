@@ -10,8 +10,11 @@ import { randomBytes } from 'crypto';
 @Injectable()
 export class CsrfMiddleware implements NestMiddleware {
   private static readonly SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS'];
+  private readonly secureCookie: boolean;
 
-  constructor(private readonly config: ConfigService) {}
+  constructor(config: ConfigService) {
+    this.secureCookie = config.getOrThrow<string>('env') === 'production';
+  }
 
   use(req: Request, res: Response, next: NextFunction): void {
     let token = req.cookies?.csrf_token as string | undefined;
@@ -19,7 +22,7 @@ export class CsrfMiddleware implements NestMiddleware {
       token = randomBytes(24).toString('hex');
       res.cookie('csrf_token', token, {
         sameSite: 'lax',
-        secure: this.config.get<string>('env') === 'production',
+        secure: this.secureCookie,
         httpOnly: false,
       });
     }

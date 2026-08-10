@@ -6,10 +6,15 @@ import { CommonCodeService } from './common-code.service';
 import { CommonCodeRepository } from './common-code.repository';
 import { CommonCodeGroupController } from './common-code-group.controller';
 import { CommonCodeController } from './common-code.controller';
+import { CommonCodeReferenceController } from './common-code-reference.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CommonCodeGroup, CommonCode])],
-  controllers: [CommonCodeGroupController, CommonCodeController],
+  controllers: [
+    CommonCodeGroupController,
+    CommonCodeController,
+    CommonCodeReferenceController,
+  ],
   providers: [CommonCodeService, CommonCodeRepository],
   exports: [CommonCodeService],
 })
