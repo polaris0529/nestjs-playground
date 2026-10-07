@@ -62,6 +62,7 @@ Load the relevant rule files before work in their scope.
 @.claude/rules/git-deploy.md
 @.claude/rules/skill.md
 @.claude/rules/vue-skill.md
+@.claude/rules/frontend-assets.md
 
 ## Project Reference Files
 
